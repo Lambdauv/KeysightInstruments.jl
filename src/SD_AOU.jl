@@ -1,7 +1,21 @@
 # SD_AOU Functions
 export SD_AOU_channelWaveShape, SD_AOU_channelFrequency, SD_AOU_channelPhase
 export SD_AOU_channelPhaseReset, SD_AOU_channelPhaseResetMultiple
-
+export SD_AOU_channelAmplitude, SD_AOU_channelOffset, SD_AOU_modulationAngleConfig
+export SD_AOU_modulationAmplitudeConfig, SD_AOU_modulationIQconfig
+export SD_AOU_clockIOconfig, SD_AOU_waveformLoad, SD_AOU_waveformLoadArrayInt16
+export SD_AOU_waveformReLoad, SD_AOU_waveformReLoadArrayInt16, SD_AOU_waveformFlush
+export SD_AOU_AWGfromArray, SD_AOU_AWGfromFile, SD_AOU_AWGqueueWaveform
+export SD_AOU_AWGflush, SD_AOU_AWGstart, SD_AOU_AWGstartMultiple
+export SD_AOU_AWGpause, SD_AOU_AWGpauseMultiple, SD_AOU_AWGresume
+export SD_AOU_AWGresumeMultiple, SD_AOU_AWGstop, SD_AOU_AWGstopMultiple
+export SD_AOU_AWGreset, SD_AOU_AWGjumpNextWaveform, SD_AOU_AWGjumpNextWaveformMultiple
+export SD_AOU_AWGisRunning, SD_AOU_AWGnWFplaying, SD_AOU_AWGtriggerExternalConfig
+export SD_AOU_AWGtrigger, SD_AOU_AWGtriggerMultiple, SD_AOU_triggerIOconfig
+export SD_AOU_triggerIOwrite, SD_AOU_triggerIOread, SD_AOU_clockSetFrequency
+export SD_AOU_clockGetFrequency, SD_AOU_clockGetSyncFrequency
+export SD_AOU_clockResetPhase, SD_AOU_AWGqueueConfig, SD_AOU_AWGqueueConfigRead
+export SD_AOU_AWGqueueMarkerConfig, SD_AOU_AWGqueueSyncMode
 
 ## channelWaveShape
 """
@@ -93,9 +107,6 @@ SD_AOU_modulationIQconfig(moduleID::Int, nChannel::Int, enable::Int) =
     ccall((:SD_AOU_modulationIQconfig, lib), Cint, (Cint, Cint, Cint),
         moduleID, nChannel, enable)
 
-export SD_AOU_channelAmplitude, SD_AOU_channelOffset, SD_AOU_modulationAngleConfig
-export SD_AOU_modulationAmplitudeConfig, SD_AOU_modulationIQconfig
-export SD_AOU_clockIOconfig, SD_AOU_waveformLoad, SD_AOU_waveformLoadArrayInt16
 ## clockIOconfig
 """
 This function configures the operation of the clock output connector.
