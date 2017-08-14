@@ -199,7 +199,7 @@ SD_Module_readRegisterWithName(moduleID::Int, regName::String, regValue::Int) =
 
 function SD_Module_readDoubleRegister(moduleID::Int, regNumber::Int,
 	unit::String)
-	errorOut = Vector{Cint}(1)
+	errorOut = Cint(0)
 	regValue = ccall((:SD_Module_readDoubleRegister, lib), Cdouble, (Cint, Cint,
 		Cstring, Ref{Cint}), moduleID, regNumber, unit, errorOut)
 	return errorOut, regValue
@@ -207,7 +207,7 @@ end
 
 function SD_Module_readDoubleRegisterWithName(moduleID::Int, regName::String,
 	unit::String)
-	errorOut = Vector{Cint}(1)
+	errorOut = Cint(0)
 	regValue = ccall((:SD_Module_readDoubleRegisterWithName, lib), Cdouble,
 		(Cint, Cstring, Cstring, Ref{Cint}), moduleID, regName, unit, errorOut)
 	return errorOut, regValue
