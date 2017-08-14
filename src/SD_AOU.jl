@@ -1,4 +1,8 @@
-##### SD_AOU Functions
+# SD_AOU Functions
+export SD_AOU_channelWaveShape, SD_AOU_channelFrequency, SD_AOU_channelPhase
+export SD_AOU_channelPhaseReset, SD_AOU_channelPhaseResetMultiple
+
+
 ## channelWaveShape
 """
 This function sets the channel output waveform type.
@@ -45,7 +49,6 @@ SD_AOU_channelPhaseResetMultiple(moduleID::Int, channelMask::Int) =
     ccall((:SD_AOU_channelPhaseResetMultiple, lib), Cint, (Cint, Cint),
         moduleID, channelMask)
 
-
 ## channelAmplitude
 """
 This function sets the amplitude of a channel.
@@ -90,6 +93,9 @@ SD_AOU_modulationIQconfig(moduleID::Int, nChannel::Int, enable::Int) =
     ccall((:SD_AOU_modulationIQconfig, lib), Cint, (Cint, Cint, Cint),
         moduleID, nChannel, enable)
 
+export SD_AOU_channelAmplitude, SD_AOU_channelOffset, SD_AOU_modulationAngleConfig
+export SD_AOU_modulationAmplitudeConfig, SD_AOU_modulationIQconfig
+export SD_AOU_clockIOconfig, SD_AOU_waveformLoad, SD_AOU_waveformLoadArrayInt16
 ## clockIOconfig
 """
 This function configures the operation of the clock output connector.
@@ -108,10 +114,14 @@ SD_AOU_waveformLoad(moduleID::Int, waveformID::Int, waveformNumber::Int,
     ccall((:SD_AOU_waveformLoad, lib), Cint, (Cint, Cint, Cint, Cint),
         moduleID, waveformID, waveformNumber, paddingMode)
 
-#SD_AOU_waveformLoadArrayInt16(moduleID::Int, waveformType::Int,
-#    waveformPoints::Int,
-#int SD_AOU_waveformLoadArrayInt16(int moduleID, int waveformType,
-#   int waveformPoints, short* waveformDataRaw, int waveformNumber, int paddingMode);
+function SD_AOU_waveformLoadArrayInt16(moduleID::Int, waveformType::Int,
+    waveformDataRaw::Vector{Int16}, waveformNumber::Int, paddingMode::Int)
+    waveformPoints = length(waveformDataRaw) # Not sure..
+    val = ccall((:SD_AOU_waveformLoadArrayInt16, lib), Cint,
+        (Cint, Cint, Cint, Ref{Cshort}, Cint, Cint), moduleID, waveformType,
+        waveformPoints, waveformDataRaw, waveformNumber, paddingMode)
+    return val
+end
 
 ## waveformReLoad
 """
@@ -123,23 +133,46 @@ SD_AOU_waveformReLoad(moduleID::Int, waveformID::Int, waveformNumber::Int,
     ccall((:SD_AOU_waveformReLoad, lib), Cint, (Cint, Cint, Cint, Cint),
         moduleID, waveformID, waveformNumber, paddingMode)
 
-#SD_AOU_waveformReLoadArrayInt16(moduleID::Int, waveformType::Int,
-#    waveformType::Int,
-# int SD_AOU_waveformReLoadArrayInt16(int moduleID, int waveformType,
-#    int waveformPoints, short *waveformDataRaw, int waveformNumber, int paddingMode);
+function SD_AOU_waveformReLoadArrayInt16(moduleID::Int, waveformType::Int,
+    waveformDataRaw::Vector{Int16}, waveformNumber::Int, paddingMode::Int)
+    waveformPoints = length(waveformDataRaw)
+    val = ccall((:SD_AOU_waveformReLoadArrayInt16, lib), Cint,
+        (Cint, Cint, Cint, Ref{Cshort}, Cint, Cint), moduleID, waveformType,
+        waveformPoints, waveformDataRaw, waveformNumber, paddingMode)
+    return val
+end
 
 ## waveformFlush
+"""
+This function deletes all the waveforms from the module onboard RAM and flushes
+all the AWG queues.
+"""
 SD_AOU_waveformFlush(moduleID::Int) =
     ccall((:SD_AOU_waveformFlush, lib), Cint, (Cint,), moduleID)
 
 ## AWG
-#SD_AOU_AWGfromArray(
-#int SD_AOU_AWGfromArray(int moduleID, int nAWG, int triggerMode, int startDelay, int cycles, int
-#   prescaler, int waveformType, int waveformPoints, double* waveformDataA, double*
-#   waveformDataB=0);
+"""
+This function provides a one-step method to load, queue and start a single
+waveform in one of the module AWGs. The waveform can be loaded from an array of
+points in memory or from a file.
+"""
+function SD_AOU_AWGfromArray(moduleID::Int, nAWG::Int, triggerMode::Int,
+    startDelay::Int, cycles::Int, prescaler::Int, waveformType::Int,
+    waveformDataA::Vector{Float64}, waveformDataB::Vector{Float64}=0)
+    waveformPoints = length(waveformDataA)
+    val = ccall((:SD_AOU_AWGfromArray, lib), Cint, (Cint, Cint, Cint, Cint,
+        Cint, Cint, Cint, Cint, Ref{Cdouble}, Ref{Cdouble}), moduleID, nAWG,
+        triggerMode, startDelay, cycles, prescaler, waveformType,
+        waveformPoints, waveformDataA, waveformDataB)
+    return val
+end
 
-#int SD_AOU_AWGfromFile(int moduleID, int nAWG, char* waveformFile, int triggerMode, int
-#   startDelay, int cycles, int prescaler);
+SD_AOU_AWGfromFile(moduleID::Int, nAWG::Int, waveformFile::String,
+    triggerMode::Int, startDelay::Int, cycles::Int, prescaler::Int) =
+    ccall((:SD_AOU_AWGfromFile, lib), Cint, (Cint, Cint, Cstring, Cint, Cint,
+        Cint, Cint), moduleID, nAWG, waveformFile, triggerMode, startDelay,
+        cycles, prescaler)
+    # not sure if waveformFile is a pointer to the file or just a string of filename
 
 ## AWGqueueWaveform
 """
