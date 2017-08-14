@@ -1,54 +1,75 @@
 module KeysightDigitizer
-# User's guide for M31XXA/M33XXA Digitizers
+# Based on user's guide for M31XXA/M33XXA Digitizers:
 # http://literature.cdn.keysight.com/litweb/pdf/M3100-90002.pdf?id=2796080
-# package code goes here
-
-
 ## should the moduleID let to be a global constant?
+using Compat
+
+
+
+## open
+export SD_Module_openWithSerialNumber, SD_Module_openWithSlot
+export SD_Module_openWithSerialNumberCompatibility
+export SD_Module_openWithSlotCompatibility
+## close
+export SD_Module_close
+## getProductName
+export SD_Module_getProductNameByIndex, SD_Module_getProductNameBySlot
+## getSerialNumber
+export SD_Module_getSerialNumberByIndex, SD_Module_getSerialNumberBySlot
+
+#lib = path/to/library_file (.dll for windows, .so for linux)
 
 ##### SD_Module Functions
 ## open
 SD_Module_openWithSerialNumber(productName::String, serialNumber::String) =
-  ccall((:SD_Module_openWithSerialNumber, lib), Cint, (Cstring, Cstring),
-    productName, serialNumber)
+    ccall((:SD_Module_openWithSerialNumber, lib), Cint, (Cstring, Cstring),
+        productName, serialNumber)
 
 SD_Module_openWithSlot(productName::String, chassis::Int, slot::Int) =
-  ccall((:SD_Module_openWithSlot, lib), Cint, (Cstring, Cint, Cint),
-    productName, chassis, slot)
+    ccall((:SD_Module_openWithSlot, lib), Cint, (Cstring, Cint, Cint),
+        productName, chassis, slot)
 
 SD_Module_openWithSerialNumberCompatibility(productName::String,
-  serialNumber::String, compatibility::Int) =
-  ccall((:SD_Module_openWithSerialNumberCompatibility, lib), Cint,
-    (Cstring, Cstring, Cint), productName, serialNumber, compatibility)
+    serialNumber::String, compatibility::Int) =
+    ccall((:SD_Module_openWithSerialNumberCompatibility, lib), Cint,
+        (Cstring, Cstring, Cint), productName, serialNumber, compatibility)
 
 SD_Module_openWithSlotCompatibility(productName::String, chassis::Int,
-  slot::Int, compatibility::Int) =
-  ccall((:SD_Module_openWithSlotCompatibility, lib), Cint, (Cstring, Cint,
-    Cint, Cint), productName, chassis, slot, compatibility)
+    slot::Int, compatibility::Int) =
+    ccall((:SD_Module_openWithSlotCompatibility, lib), Cint, (Cstring, Cint,
+        Cint, Cint), productName, chassis, slot, compatibility)
 
 ## close
 SD_Module_close(moduleID::Int) =
-  ccall((:SD_Module_close, lib), Cint, (Cint,), moduleID)
+    ccall((:SD_Module_close, lib), Cint, (Cint,), moduleID)
 
 ## moduleCount
 SD_Module_moduleCount() =
-  ccall((:SD_Module_moduleCount, lib), Cint, ())
+    ccall((:SD_Module_moduleCount, lib), Cint, ())
 
 ## getProductName
 function SD_Module_getProductNameByIndex(index::Int)
-  productName = Vector{UInt8}(128)
-  val = ccall((:SD_Module_getProductNameByIndex, lib), Cint, (Cint, Ptr{UInt8}),
-    index, productName)
+    productName = Vector{UInt8}(128)
+    val = ccall((:SD_Module_getProductNameByIndex, lib), Cint,
+		(Cint, Ptr{UInt8}), index, productName)
 	productName[end] = 0	# ensure null-termination
-	return val, unsafe_string(pointer(productName))
+	if val >= 0
+		return unsafe_string(pointer(productName))
+	else
+		return val
+	end
 end
 
 function SD_Module_getProductNameBySlot(chassis::Int, slot::Int)
-	productName = Vector{UInt8}(128)
+    productName = Vector{UInt8}(128)
 	val = ccall((:SD_Module_getProductNameBySlot, lib), Cint,
 		(Cint, Cint, Ptr{UInt8}), chassis, slot, productName)
 	productName[end] = 0	# ensure null-termination
-	return val, unsafe_string(pointer(productName))
+	if val >= 0
+		return unsafe_string(pointer(productName))
+	else
+		return val
+	end
 end
 
 ## getSerialNumber
@@ -57,7 +78,11 @@ function SD_Module_getSerialNumberByIndex(index::Int)
 	val = ccall((:SD_Module_getSerialNumberByIndex, lib), Cint,
 		(Cint, Ptr{UInt8}), index, serialNumber)
 	serialNumber[end] = 0	# ensure null-termination
-	return val, unsafe_string(pointer(serialNumber))
+	if val >= 0
+		return unsafe_string(pointer(serialNumber))
+	else
+		return val
+	end
 end
 
 function SD_Module_getSerialNumberBySlot(chassis::Int, slot::Int)
@@ -65,7 +90,11 @@ function SD_Module_getSerialNumberBySlot(chassis::Int, slot::Int)
 	val = ccall((:SD_Module_getSerialNumberBySlot, lib), Cint,
 		(Cint, Cint, Ptr{UInt8}), chassis, slot, serialNumber)
 	serialNumber[end] = 0	# ensure null-termination
-	return val, unsafe_string(pointer(serialNumber))
+	if val >= 0
+		return unsafe_string(pointer(serialNumber))
+	else
+		return val
+	end
 end
 
 ## getChassis
@@ -89,17 +118,17 @@ SD_Module_PXItriggerRead(moduleID::Int, nPXItrigger::Int) =
 ##### SD_Module Functions (FPGA-related): Needs modification
 ## FPGAwritePCport
 SD_Module_FPGAwritePCport(moduleID::Int, nPCport::Int, data::Int,
-  dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
-  ccall((:SD_Module_FPGAwritePCport, lib), Cint, (Cint, Cint, Ptr{Clong}, Cint,
-    Cint, Cint, Cint), moduleID, nPCport, data, dataSize, address, addressMode,
-    accessMode)
+    dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
+    ccall((:SD_Module_FPGAwritePCport, lib), Cint,
+        (Cint, Cint, Ptr{Clong}, Cint,Cint, Cint, Cint),
+        moduleID, nPCport, data, dataSize, address, addressMode, accessMode)
 
 ## FPGAreadPCport
 SD_Module_FPGAreadPCport(moduleID::Int, nPCport::Int, data,
-  dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
-  ccall((:SD_Module_FPGAreadPCport, lib), Cint, (Cint, Cint, Ptr{Cint}, Cint,
-    Cint, Cint, Cint), moduleID, nPCport, data, dataSize, address, addressMode,
-    accessMode)
+    dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
+    ccall((:SD_Module_FPGAreadPCport, lib), Cint,
+        (Cint, Cint, Ptr{Cint}, Cint, Cint, Cint, Cint),
+        moduleID, nPCport, data, dataSize, address, addressMode, accessMode)
 ##########################################################################TODO
 ##### SD_Module Functions (HVI-related): Needs modification
 ## writeRegister
@@ -170,13 +199,16 @@ SD_AIN_DAQanalogTriggerConfig(moduleID::Int, nDAQ::Int, triggerNumber::Int) =
 		moduleID, nDAQ, triggerNumber)
 
 ## DAQread
-function SD_AIN_DAQread(moduleID::Int, nDAQ::Int, DAQpoints::Int,
-	timeout::Int) =
+function SD_AIN_DAQread(moduleID::Int, nDAQ::Int, DAQpoints::Int, timeout::Int)
 	DAQdata = Vector{Cshort}(DAQpoints) 	# Create an array to retrieve data
 	# DAQdata contains DAQpoints words. Its size is DAQpoints × 2bytes/word.
  	val = ccall((:SD_AIN_DAQread, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
 		Cint), moduleID, nDAQ, DAQdata, DAQpoints, timeout)
-	return DAQdata, val
+	if val >= 0
+		return DAQdata
+	else
+		return val
+	end
 end
 
 ## DAQstart
@@ -199,11 +231,12 @@ SD_AIN_DAQstopMultiple(moduleID::Int, DAQmask::Int) =
 
 ## DAQpause
 SD_AIN_DAQpause(moduleID::Int, nDAQ::Int) =
-  ccall((:SD_AIN_DAQpause, lib), Cint, (Cint, Cint), moduleID, nDAQ)
+    ccall((:SD_AIN_DAQpause, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQpauseMultiple
 SD_AIN_DAQpauseMultiple(moduleID::Int, DAQmask::Int) =
-  ccall((:SD_AIN_DAQpauseMultiple, lib), Cint, (Cint, Cint), moduleID, DAQmask)
+    ccall((:SD_AIN_DAQpauseMultiple, lib), Cint, (Cint, Cint),
+        moduleID, DAQmask)
 
 ## DAQresume
 SD_AIN_DAQresume(moduleID::Int, nDAQ::Int) =
@@ -211,46 +244,48 @@ SD_AIN_DAQresume(moduleID::Int, nDAQ::Int) =
 
 ## DAQresumeMultiple
 SD_AIN_DAQresumeMultiple(moduleID::Int, DAQmask::Int) =
-  ccall((:SD_AIN_DAQresumeMultiple, lib), Cint, (Cint, Cint), moduleID, DAQmask)
+    ccall((:SD_AIN_DAQresumeMultiple, lib), Cint, (Cint, Cint),
+        moduleID, DAQmask)
 
 ## DAQflush
 SD_AIN_DAQflush(moduleID::Int, nDAQ::Int) =
-  ccall((:SD_AIN_DAQflush, lib), Cint, (Cint, Cint), moduleID, nDAQ)
+    ccall((:SD_AIN_DAQflush, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQflushMultiple
 SD_AIN_DAQflushMultiple(moduleID::Int, DAQmask::Int) =
-  ccall((:SD_AIN_DAQflushMultiple, lib), Cint, (Cint, Cint), moduleID, DAQmask)
+    ccall((:SD_AIN_DAQflushMultiple, lib), Cint, (Cint, Cint),
+        moduleID, DAQmask)
 
 ## DAQtrigger
 SD_AIN_DAQtrigger(moduleID::Int, nDAQ::Int) =
-  ccall((:SD_AIN_DAQtrigger, lib), Cint, (Cint, Cint), moduleID, nDAQ)
+    ccall((:SD_AIN_DAQtrigger, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQtriggerMultiple
 SD_AIN_DAQtriggerMultiple(moduleID::Int, DAQmask::Int) =
-  ccall((:SD_AIN_DAQtriggerMultiple, lib), Cint, (Cint, Cint),
-  	moduleID, DAQmask)
+    ccall((:SD_AIN_DAQtriggerMultiple, lib), Cint, (Cint, Cint),
+        moduleID, DAQmask)
 
 ## DAQcounterRead
-SD_AIN_DAQcounterRead(moduleID::Int, DAQ::int) =
-  ccall((:SD_AIN_DAQcounterRead, lib), Cint, (Cint, Cint), moduleID, DAQ)
+SD_AIN_DAQcounterRead(moduleID::Int, DAQ::Int) =
+    ccall((:SD_AIN_DAQcounterRead, lib), Cint, (Cint, Cint), moduleID, DAQ)
 
 ## triggerIOconfig
 SD_AIN_triggerIOconfig(moduleID::Int, direction::Int, syncMode::Int) =
-  ccall((:SD_AIN_triggerIOconfig, lib), Cint, (Cint, Cint, Cint),
-    moduleID, direction, syncMode)
+    ccall((:SD_AIN_triggerIOconfig, lib), Cint, (Cint, Cint, Cint),
+        moduleID, direction, syncMode)
 
 ## triggerIOwrite
 SD_AIN_triggerIOwrite(moduleID::Int, value::Int) =
-  ccall((:SD_AIN_triggerIOwrite, lib), Cint, (Cint, Cint), moduleID, value)
+    ccall((:SD_AIN_triggerIOwrite, lib), Cint, (Cint, Cint), moduleID, value)
 
 ## triggerIOread
 SD_AIN_triggerIOread(moduleID::Int) =
-  ccall((:SD_AIN_triggerIOread, lib), Cint, (Cint,), moduleID)
+    ccall((:SD_AIN_triggerIOread, lib), Cint, (Cint,), moduleID)
 
 ## clockSetFrequency
 SD_AIN_clockSetFrequency(moduleID::Int, frequency::Float64, mode::Int) =
-  ccall((:SD_AIN_clockSetFrequency, lib), Cdouble, (Cint, Cdouble, Cint),
-    moduleID, frequency, mode)
+    ccall((:SD_AIN_clockSetFrequency, lib), Cdouble, (Cint, Cdouble, Cint),
+        moduleID, frequency, mode)
 
 ## clockGetFrequency
 SD_AIN_clockGetFrequency(moduleID::Int) =
@@ -292,16 +327,22 @@ SD_AIN_DAQbufferRelease(moduleID::Int, nDAQ::Int) =
 #end
 
 ## FFT
-function SD_AIN_FFT(moduleID::Int, channel::Int, data::Array{Float64}, dB::Bool,
-	windowType::Int)
+function SD_AIN_FFT(moduleID::Int, channel::Int, data::Array{Int16}, dB::Bool,
+    windowType::Int)
 	dataSize = length(data)
-	result = Vector{Cdouble}(resultSize)
-	ccall((:SD_AIN_FFT, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
+	resultSize = dataSize
+	resultMag = Vector{Cdouble}(resultSize)
+	resultPhase = Vector{Cdouble}(resultSize)
+	val = ccall((:SD_AIN_FFT, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
 		Ref{Cdouble}, Cint, Ref{Cdouble}, Bool, Cint), moduleID, channel, data,
-		dataSize, result, resultSize, resultPhase, dB, windowType)
-
+		dataSize, resultMag, resultSize, resultPhase, dB, windowType)
+	if val >= 0
+		return resultMag, resultPhase
+	else
+		return val
+	end
+end
 #= int SD_AIN_FFT(int moduleID, int channel, short *data, int size,
 double *result, int resultSize, double *resultPhase, bool dB, int windowType);=#
-end
 
 end # module

@@ -1,3 +1,5 @@
+##### SD_Error
+
 export keysight_error
 
 error_dict = Dict(
@@ -13,7 +15,7 @@ error_dict = Dict(
     -8009 => "Keysight Error: Invalid ModuleID",
     -8010 => "Keysight Error: Invalid Module User Name",
     -8011 => "Keysight Error: Invalid HVI",
-    -8012 => "Error: Invalid Object",
+    -8012 => "Keysight Error: Invalid Object",
     -8013 => "Keysight Error: Invalid channel number",
     -8014 => "Keysight Error: Bus doesn’t exist",
     -8015 => "Keysight Error: Any input assigned to the bitMap does not exist",
