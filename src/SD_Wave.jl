@@ -14,7 +14,6 @@ SD_Wave_newFromArrayDouble(waveformType::Int, waveformPoints::Int,
 This function creates a waveform object from data points contained in an array
 in a file.
 """
-
 SD_Wave_newFromFile(waveformFile::String) =
     ccall((:SD_Wave_newFromFile, lib), Cint, (Cstring,), waveformFile)
 
