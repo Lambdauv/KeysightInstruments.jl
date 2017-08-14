@@ -5,5 +5,20 @@ module KeysightInstruments
 # http://literature.cdn.keysight.com/litweb/pdf/M3201-90001.pdf?id=2787170
 using Compat
 
+# Load libraries: TODO
+
+
+
+# SD_Module Functions
+include("SD_Module.jl")
+# SD_AIN Functions
+include("SD_AIN.jl")
+# SD_AOU Functions
+include("SD_AOU.jl")
+# SD_Wave Functions
+include("SD_Wave.jl")
+
+# Keysight Errors
+include("KeysightErrors.jl")
 
 end # module
