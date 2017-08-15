@@ -1,5 +1,4 @@
-##### SD_Error
-
+# SD_Error
 export keysight_error
 
 error_dict = Dict(

@@ -1,4 +1,4 @@
-# SD_AIN Functions
+# SD_AIN Functions for Keysight M31XXA/M33XXA Digitizers
 export SD_AIN_channelInputConfig, SD_AIN_channelPrescalerConfig
 export SD_AIN_channelTriggerConfig, SD_AIN_DAQconfig, SD_AIN_DAQdigitalTriggerConfig
 export SD_AIN_DAQanalogTriggerConfig, SD_AIN_DAQread, SD_AIN_DAQstart
@@ -27,12 +27,6 @@ SD_AIN_channelInputConfig(moduleID::Int, nChannel::Int, fullScale::Float64,
 	coupling::Int) =
 	ccall((:SD_AIN_channelInputConfig, lib), Cint, (Cint, Cint, Cdouble, Cint),
 		moduleID, nChannel, fullScale, coupling)
-# Input Impedance
-const AIN_IMPEDANCE_HZ              = Cint(0)
-const AIN_IMPEDANCE_50              = Cint(1)
-# Input Coupling
-const AIN_COUPLING_DC               = Cint(0)
-const AIN_COUPLING_AC               = Cint(1)
 
 ## channelPrescalerConfig
 """
@@ -57,10 +51,6 @@ SD_AIN_channelTriggerConfig(moduleID::Int, nChannel::Int,
 	analogTriggerMode::Int, threshold::Float64) =
 	ccall((:SD_AIN_channelTriggerConfig, lib), Cint, (Cint, Cint, Cint,
 		Cdouble), moduleID, nChannel, analogTriggerMode, threshold)
-### Analog Trigger Mode
-const AIN_RISING_EDGE               = Cint(1)
-const AIN_FALLING_EDGE              = Cint(2)
-const AIN_BOTH_EDGES                = Cint(3)
 
 ## DAQconfig
 """
@@ -88,11 +78,6 @@ SD_AIN_DAQconfig(moduleID::Int, nDAQ::Int, DAQpointsPerCycle::Int, cycles::Int,
 	triggerDelay::Int, triggerMode::Int) =
 	ccall((:SD_AIN_DAQconfig, lib), Cint, (Cint, Cint, Cint, Cint, Cint, Cint),
 		moduleID, nDAQ, DAQpointsPerCycle, cycles, triggerDelay, triggerMode)
-### DAQ Trigger Mode
-const AUTOTRIG                      = Cint(0)
-const SWHVITRIG                     = Cint(1)
-const HWDIGTRIG                     = Cint(2)
-const HWANATRIG                     = Cint(3)
 
 ## DAQdigitalTriggerConfig
 """
@@ -113,14 +98,6 @@ SD_AIN_DAQdigitalTriggerConfig(moduleID::Int, nDAQ::Int, triggerSource::Int,
 	triggerNumber::Int, triggerBehavior::Int) =
 	ccall((:SD_AIN_DAQdigitalTriggerConfig, lib), Cint, (Cint, Cint, Cint, Cint,
 		Cint), moduleID, nDAQ, triggerSource, triggerNumber, triggerBehavior)
-# DAQ Hardware Digital Trigger Source
-const TRIG_EXTERNAL                 = Cint(0)
-const TRIG_PXI                      = Cint(1)
-# DAQ Hardware Digital Trigger Behavior
-const TRIG_HIGH                     = Cint(1)
-const TRIG_LOW                      = Cint(2)
-const TRIG_RISE                     = Cint(3)
-const TRIG_FALL                     = Cint(4)
 
 ## DAQanalogTriggerConfig
 """
@@ -263,9 +240,9 @@ This function configures the trigger connector/line direction and
 synchronization/sampling method.
 ### Trigger I/O Options
 - Trigger Output (readable) : TRG operates as a general purpose digital output
-signal, which can be written by the user software --> AIN_TRIG_OUT = 0
+signal, which can be written by the user software --> AOU_TRIG_OUT = 0
 - Trigger Input : TRG operates as a trigger input, or as general purpose digital
-input signal, which can be read by the user software --> AIN_TRIG_IN = 1
+input signal, which can be read by the user software --> AOU_TRIG_IN = 1
 ### Trigger Synchronization/Sampling Options
 - Non-synchronized mode : The trigger is sampled with an internal 100 MHz clock
 --> SYNC_NONE = 0
@@ -275,12 +252,6 @@ input signal, which can be read by the user software --> AIN_TRIG_IN = 1
 SD_AIN_triggerIOconfig(moduleID::Int, direction::Int, syncMode::Int) =
     ccall((:SD_AIN_triggerIOconfig, lib), Cint, (Cint, Cint, Cint),
         moduleID, direction, syncMode)
-### Trigger I/O Options
-const AIN_TRG_OUT                   = Cint(0)
-const AIN_TRG_IN                    = Cint(1)
-### Trigger Synchronization/Sampling Options
-const SYNC_NONE                     = Cint(0)
-const SYNC_CLK_0                    = Cint(1)
 
 ## triggerIOwrite
 """
@@ -310,9 +281,7 @@ sacrificing jitter performance --> CLK_FAST_TUNE = 1
 SD_AIN_clockSetFrequency(moduleID::Int, frequency::Float64, mode::Int) =
     ccall((:SD_AIN_clockSetFrequency, lib), Cdouble, (Cint, Cdouble, Cint),
         moduleID, frequency, mode)
-### CLK Set Frequency Mode
-const CLK_LOW_JITTER                = Cint(0)
-const CLK_FAST_TUNE                 = Cint(1)
+
 ## clockGetFrequency
 """
 This function returns the real hardware clock frequency. It may differ from the
@@ -422,11 +391,3 @@ function SD_AIN_FFT(moduleID::Int, channel::Int, data::Array{Int16}, dB::Bool,
 		return val
 	end
 end
-# Window types used in FFT function
-const WINDOW_RECTANGULAR            = Cint(0)
-const WINDOW_BARTLETT               = Cint(1)
-const WINDOW_HANNING                = Cint(2)
-const WINDOW_HAMMING                = Cint(3)
-const WINDOW_BLACKMAN               = Cint(4)
-const WINDOW_KAISER                 = Cint(5)
-const WINDOW_GAUSS                  = Cint(6)

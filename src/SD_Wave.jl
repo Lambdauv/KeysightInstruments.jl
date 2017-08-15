@@ -1,4 +1,4 @@
-# SD_Wave Functions
+# SD_Wave Functions for Keysight M32XXA/M33XXA AWGs
 export SD_Wave_newFromArrayDouble, SD_Wave_newFromFile, SD_Wave_delete
 
 ## new
@@ -25,14 +25,7 @@ SD_Wave_newFromArrayDouble(waveformType::Int, waveformPoints::Int,
     ccall((:SD_Wave_newFromArrayDouble, lib), Cint,
         (Cint, Cint, Ref{Cdouble}, Ref{Cdouble}),
         waveformType, waveformPoints, waveformDataA, waveformDataB)
-### AWG Waveform types
-const WAVE_ANALOG_16                = Cint(0)
-const WAVE_ANALOG_32                = Cint(1)
-const WAVE_ANALOG_16_DUAL           = Cint(4)
-const WAVE_ANALOG_32_DUAL           = Cint(6)
-const WAVE_IQ                       = Cint(2)
-const WAVE_IQPOLAR                  = Cint(3)
-const WAVE_DIGITAL                  = Cint(5)
+
 """
 This function creates a waveform object from data points contained in an array
 in a file.

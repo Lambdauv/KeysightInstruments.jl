@@ -8,7 +8,8 @@ using Compat
 # Load libraries: TODO
 
 
-
+# Keysight Constants
+include("KeysightConstants.jl")
 # SD_Module Functions
 include("SD_Module.jl")
 # SD_AIN Functions
@@ -20,5 +21,4 @@ include("SD_Wave.jl")
 
 # Keysight Errors
 include("KeysightErrors.jl")
-
 end # module

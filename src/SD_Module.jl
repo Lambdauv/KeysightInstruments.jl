@@ -1,4 +1,4 @@
-# SD_Module Functions
+# SD_Module Functions for Keysight M31XXA/M33XXA Digitizers and M32XXA/M33XXA AWGs
 export SD_Module_openWithSerialNumber, SD_Module_openWithSlot
 export SD_Module_openWithSerialNumberCompatibility
 export SD_Module_openWithSlotCompatibility, SD_Module_close, SD_Module_moduleCount
@@ -18,8 +18,8 @@ using any other module-related function. A module can be opened using the
 serial number or the chassis and slot number. The first option ensures the same
 module is always opened regardless its chassis or slot location.
 ### Compatibility Options
-Legacy : Channel enumeration starts with CH0 --> COMPATIBILITY_LEGACY = 0
-Keysight : Channel enumeration starts with CH1 --> COMPATIBILITY_KEYSIGHT = 1
+- Legacy : Channel enumeration starts with CH0 --> COMPATIBILITY_LEGACY = 0
+- Keysight : Channel enumeration starts with CH1 --> COMPATIBILITY_KEYSIGHT = 1
 """
 SD_Module_openWithSerialNumber(productName::String, serialNumber::String) =
     ccall((:SD_Module_openWithSerialNumber, lib), Cint, (Cstring, Cstring),
@@ -38,8 +38,6 @@ SD_Module_openWithSlotCompatibility(productName::String, chassis::Int,
     slot::Int, compatibility::Int) =
     ccall((:SD_Module_openWithSlotCompatibility, lib), Cint, (Cstring, Cint,
         Cint, Cint), productName, chassis, slot, compatibility)
-const COMPATIBILITY_LEGACY          = Cint(0)
-const COMPATIBILITY_KEYSIGHT        = Cint(1)
 
 ## close
 """
