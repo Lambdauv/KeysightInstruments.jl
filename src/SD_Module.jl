@@ -1,5 +1,4 @@
 # SD_Module Functions
-
 export SD_Module_openWithSerialNumber, SD_Module_openWithSlot
 export SD_Module_openWithSerialNumberCompatibility
 export SD_Module_openWithSlotCompatibility, SD_Module_close, SD_Module_moduleCount

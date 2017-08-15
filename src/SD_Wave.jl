@@ -1,4 +1,6 @@
-##### SD_Wave Functions
+# SD_Wave Functions
+export SD_Wave_newFromArrayDouble, SD_Wave_newFromFile, SD_Wave_delete
+
 ## new
 """
 This function creates a waveform object from data points contained in an array
