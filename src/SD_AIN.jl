@@ -10,7 +10,7 @@ export SD_AIN_triggerIOconfig, SD_AIN_triggerIOwrite, SD_AIN_triggerIOread
 export SD_AIN_clockSetFrequency, SD_AIN_clockGetFrequency, SD_AIN_clockGetSyncFrequency
 export SD_AIN_clockResetPhase, SD_AIN_DAQbufferPoolConfig, SD_AIN_DAQbufferAdd
 export SD_AIN_DAQbufferGet, SD_AIN_DAQbufferRelease, SD_AIN_DAQbufferRemove
-export SD_AIN_FFT 
+export SD_AIN_FFT
 
 ## channelInputConfig
 """
