@@ -5,13 +5,34 @@ export SD_Wave_newFromArrayDouble, SD_Wave_newFromFile, SD_Wave_delete
 """
 This function creates a waveform object from data points contained in an array
 in memory.
+### AWG Waveform types
+- Analog 16 Bits : Analog normalized waveforms (-1..1) defined with doubles
+--> WAVE_ANALOG_16 = 0
+- Analog 32 Bits : Analog normalized waveforms (-1..1) defined with doubles
+--> WAVE_ANALOG_32 = 1
+- Analog 16 Bits Dual : Analog normalized waveforms (-1..1) defined with
+doubles, with two components (A and B) --> WAVE_ANALOG_16_DUAL = 4
+- Analog 32 Bits Dual : Analog normalized waveforms (-1..1) defined with
+doubles, with two components (A and B) --> WAVE_ANALOG_32_DUAL = 6
+- IQ : Analog normalized waveforms (-1..1) defined with doubles, with two
+components (I and Q) --> WAVE_IQ = 2
+- IQ Polar : Analog waveforms (-1..1 module, -180..+180 phase) defined with
+doubles, with two components (Module and Phase) --> WAVE_IQPOLAR = 3
+- Digital : Digital waveforms defined with integers --> WAVE_DIGITAL = 5
 """
 SD_Wave_newFromArrayDouble(waveformType::Int, waveformPoints::Int,
     waveformDataA::Array{Float64}, waveformDataB::Array{Float64}=0) =
     ccall((:SD_Wave_newFromArrayDouble, lib), Cint,
         (Cint, Cint, Ref{Cdouble}, Ref{Cdouble}),
         waveformType, waveformPoints, waveformDataA, waveformDataB)
-
+### AWG Waveform types
+const WAVE_ANALOG_16                = Cint(0)
+const WAVE_ANALOG_32                = Cint(1)
+const WAVE_ANALOG_16_DUAL           = Cint(4)
+const WAVE_ANALOG_32_DUAL           = Cint(6)
+const WAVE_IQ                       = Cint(2)
+const WAVE_IQPOLAR                  = Cint(3)
+const WAVE_DIGITAL                  = Cint(5)
 """
 This function creates a waveform object from data points contained in an array
 in a file.

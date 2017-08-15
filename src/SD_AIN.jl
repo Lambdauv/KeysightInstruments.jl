@@ -98,9 +98,9 @@ const HWANATRIG                     = Cint(3)
 """
 This function configures the digital hardware triggers for the selected DAQ.
 ### DAQ Hardware Digital Trigger Source
-- External I/O Trigger : The DAQ trigger is a TRG connector/line of the product (I/O
-Triggers (page 15)). PXI form factor only: this trigger can be
-synchronized to CLK10 --> TRIG_EXTERNAL = 0
+- External I/O Trigger : The DAQ trigger is a TRG connector/line of the product.
+PXI form factor only: this trigger can be synchronized to CLK10
+--> TRIG_EXTERNAL = 0
 - PXI Trigger : PXI form factor only. The DAQ trigger is a PXI trigger line
 and it is synchronized to CLK10 --> TRIG_PXI = 1
 ### DAQ Hardware Digital Trigger Behavior

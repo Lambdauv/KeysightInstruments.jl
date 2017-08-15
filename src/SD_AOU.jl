@@ -106,11 +106,24 @@ SD_AOU_channelOffset(moduleID::Int, nChannel::Int, offset::Float64) =
 """
 This function configures the modulation in frequency/phase for the selected
 channel.
+### Angle Modulation Types
+- No Modulation : Modulation is disabled --> AOU_MOD_OFF = 0 (default)
+- Frequency Modulation : The AWG is used to modulate the channel frequency
+--> AOU_MOD_FM = 1
+- Frequency Modulation (32 bits): The AWG is used to modulate the channel
+frequency. For models with -DM1 dual modulation option --> AOU_MOD_FM_32b = 1
+- Phase Modulation : The AWG is used to modulate the channel phase
+--> AOU_MOD_PM = 2
 """
 SD_AOU_modulationAngleConfig(moduleID::Int, nChannel::Int, modulationType::Int,
     deviationGain::Int) =
     ccall((:SD_AOU_modulationAngleConfig, lib), Cint, (Cint, Cint, Cint, Cint),
         moduleID, nChannel, modulationType, deviationGain)
+### Angle Modulation Types
+const AOU_MOD_OFF                   = Cint(0)
+const AOU_MOD_FM                    = Cint(1)
+const AOU_MOD_FM_32b                = Cint(1)
+const AOU_MOD_PM                    = Cint(2)
 
 ## modulationAmplitudeConfig
 """
@@ -125,18 +138,37 @@ SD_AOU_modulationAmplitudeConfig(moduleID::Int, nChannel::Int,
 ## modulationIQconfig
 """
 This function sets the IQ modulation for the selected channel.
+### Amplitude Modulation Options
+- No Modulation : Modulation is disabled. The channel amplitude and offset are
+only set by the main registers set by the main registers
+--> AOU_MOD_OFF = 0 (default)
+- Amplitude Modulation : The modulating signal is used to modulate the channel
+amplitude --> AOU_MOD_AM = 1
+- Offset Modulation : The modulating signal is used to modulate the channel
+offset --> AOU_MOD_OFFSET = 2
 """
 SD_AOU_modulationIQconfig(moduleID::Int, nChannel::Int, enable::Int) =
     ccall((:SD_AOU_modulationIQconfig, lib), Cint, (Cint, Cint, Cint),
         moduleID, nChannel, enable)
+### Amplitude Modulation Options
+const AOU_MOD_OFF                   = Cint(0)
+const AOU_MOD_AM                    = Cint(1)
+const AOU_MOD_OFFSET                = Cint(2)
 
 ## clockIOconfig
 """
 This function configures the operation of the clock output connector.
+### CLK Output Configureations
+- Disable : The CLK connector is disabled --> CLK_CONN_DISABLED = 0 (default)
+- CLKref Output : A copy of the reference clock is available at the CLK
+connector --> CLK_REF_OUTPUT = 1
 """
 SD_AOU_clockIOconfig(moduleID::Int, clockConfig::Int) =
     ccall((:SD_AOU_clockIOconfig, lib), Cint, (Cint, Cint), moduleID,
         clockIOconfig)
+### CLK Output Configureations
+const CLK_CONN_DISABLED                 = Cint(0)
+const CLK_REF_OUTPUT                    = Cint(1)
 
 ## waveformLoad
 """
@@ -191,7 +223,17 @@ waveform in one of the module AWGs. The waveform can be loaded from an array of
 points in memory or from a file.
 ### AWG Trigger Mode
 - Auto : The waveform is launched automatically after function AWGstart, or
-when the previous waveform in the queue finishes
+when the previous waveform in the queue finishes --> AUTOTRIG = 0
+- Software / HVI : Software trigger. The AWG is triggered by the function
+AWGtrigger, provided that the AWG is running. AWGtrigger can be executed from
+the user application (VI) or from an HVI --> SWHVITRIG = 1
+- Software / HVI (per cycle) : Software trigger. Identical to the previous
+option, but the trigger is required per each waveform cycle
+--> SWHVITRIG_CYCLE = 5
+- External Trigger : Hardware trigger. The AWG waits for an external trigger
+--> EXTTRIG = 2
+- External Trigger (per cycle) : Hardware trigger. Identical to the previous
+option, but the trigger is required per each waveform --> cycleEXTTRIG_CYCLE = 6
 """
 function SD_AOU_AWGfromArray(moduleID::Int, nAWG::Int, triggerMode::Int,
     startDelay::Int, cycles::Int, prescaler::Int, waveformType::Int,
@@ -203,6 +245,12 @@ function SD_AOU_AWGfromArray(moduleID::Int, nAWG::Int, triggerMode::Int,
         waveformPoints, waveformDataA, waveformDataB)
     return val
 end
+### AWG Trigger Mode
+const AUTOTRIG              = Cint(0)
+const SWHVITRIG             = Cint(1)
+const SWHVITRIG_CYCLE       = Cint(5)
+const EXTTRIG               = Cint(2)
+const EXTTRIG_CYCLE         = Cint(6)
 
 SD_AOU_AWGfromFile(moduleID::Int, nAWG::Int, waveformFile::String,
     triggerMode::Int, startDelay::Int, cycles::Int, prescaler::Int) =
@@ -351,11 +399,25 @@ SD_AOU_AWGnWFplaying(moduleID::Int, nAWG::Int) =
 This function configures the external triggers for the selected AWG. The
 external trigger is used in case the waveform is queued with the external
 trigger mode option (function AWGqueueWaveform).
+### AWG External Trigger Source
+- External I/O Trigger : The AWG trigger is a TRG connector/line of the module
+I/O Triggers. PXI form factor only: this trigger can be synchronized to CLK10
+--> TRIG_EXTERNAL = 0
+- PXI Trigger [0..n] : PXI form factor only. The AWG external trigger is a PXI
+trigger line and it is synchronized to CLK10 --> TRIG_PXI(=4000) + Trigger No.
+### AWG External Trigger Behavior
+- Active High : Trigger is active when it is at level high --> TRIG_HIGH = 1
+- Active Low : Trigger is active when it is at level low --> TRIG_LOW = 2
+- Rising Edge : Trigger is active on the rising edge --> TRIG_RISE = 3
+- Falling Edge : Trigger is active on the falling edge --> TRIG_FALL = 4
 """
 SD_AOU_AWGtriggerExternalConfig(moduleID::Int, nAWG::Int, externalSource::Int,
     triggerBehavior::Int) =
     ccall((:SD_AOU_AWGtriggerExternalConfig, lib), Cint, (Cint, Cint, Cint,
         Cint), moduleID, nAWG, externalSource, triggerBehavior)
+### AWG External Trigger Source
+const TRIG_EXTERNAL                 = Cint(0)
+const TRIG_PXI                      = Cint(4000)
 
 ## AWGtrigger
 """
@@ -378,10 +440,26 @@ SD_AOU_AWGtriggerMultiple(moduleID::Int, AWGmask::Int) =
 """
 This function configures the trigger connector/line direction and
 synchronization/sampling method
+### Trigger I/O Options
+- Trigger Output (readable) : TRG operates as a general purpose digital output
+signal, which can be written by the user software --> AOU_TRG_OUT = 0
+- Trigger Input : TRG operates as a trigger input, or as general purpose
+digital input signal, which can be read by the user software --> AOU_TRG_IN = 1
+### Trigger Synchronization/Sampling Options
+- Non-synchronized mode : The trigger is sampled with an internal 100 MHz clock
+--> SYNC_NONE = 0
+- Synchronized mode : (PXI form factor only) The trigger is sampled using CLK10
+--> SYNC_CLK_0 = 1
 """
 SD_AOU_triggerIOconfig(moduleID::Int, direction::Int, syncMode::Int) =
     ccall((:SD_AOU_triggerIOconfig, lib), Cint, (Cint, Cint, Cint), moduleID,
         direction, syncMode)
+### Trigger I/O Options
+const AOU_TRG_OUT                   = Cint(0)
+const AOU_TRG_IN                    = Cint(1)
+### Trigger Synchronization/Sampling Options
+const SYNC_NONE                     = Cint(0)
+const SYNC_CLK_0                    = Cint(1)
 
 ## triggerIOwrite
 """
@@ -401,10 +479,18 @@ SD_AOU_triggerIOread(moduleID::Int) =
 ## clockSetFrequency
 """
 This function sets the module clock frequency.
+### CLK Set Frequency Mode
+- Low Jitter Mode : The clock system is set to achieve the lowest jitter,
+sacrificing tuning speed --> CLK_LOW_JITTER = 0
+- Fast Tuning Mode : The clock system is set to achieve the lowest tuning time,
+sacrificing jitter performance --> CLK_FAST_TUNE = 1
 """
 SD_AOU_clockSetFrequency(moduleID::Int, frequency::Float64, mode::Int) =
     ccall((:SD_AOU_clockSetFrequency, lib), Cdouble, (Cint, Cdouble, Cint),
         moduleID, frequency, mode)
+### CLK Set Frequency Mode
+const CLK_LOW_JITTER                = Cint(0)
+const CLK_FAST_TUNE                 = Cint(1)
 
 ## clockGetFrequency
 """
