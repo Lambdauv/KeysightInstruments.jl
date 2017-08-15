@@ -11,7 +11,6 @@ export SD_Module_writeRegisterWithName, SD_Module_writeDoubleRegister
 export SD_Module_writeDoubleRegisterWithName
 #lib = path/to/library_file (.dll for windows, .so for linux)
 
-
 ## open
 """
 This function initializes a hardware module therefore it must be called before
