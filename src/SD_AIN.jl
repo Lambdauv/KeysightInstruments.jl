@@ -309,10 +309,10 @@ SD_AIN_clockResetPhase(moduleID::Int, triggerBehavior::Int, PXItrigger::Int,
 		moduleID, triggerBehavior, PXItrigger, skew)
 
 ## DAQbufferPoolConfig: TODO
-"""
-This function configures buffer pool that will be filled with the data of the
-channel to be transferred to PC.
-"""
+#"""
+#This function configures buffer pool that will be filled with the data of the
+#channel to be transferred to PC.
+#"""
 #function SD_AIN_DAQbufferPoolConfig(moduleID::Int, nDAQ::Int, nPoints::Int,
 #	timeOut::Int)
 #	dataBuffer = Vector{Cshort}(nPoints)
@@ -332,10 +332,10 @@ function SD_AIN_DAQbufferAdd(moduleID::Int, nDAQ::Int,
 end
 
 ## DAQbufferGet: TODO
-"""
-Gets a filled buffer from the channel buffer pool. User has to call DAQbufferAdd
-with this buffer to tell the pool that the buffer can be used again.
-"""
+#"""
+#Gets a filled buffer from the channel buffer pool. User has to call DAQbufferAdd
+#with this buffer to tell the pool that the buffer can be used again.
+#"""
 #SD_AIN_DAQbufferGet(moduleID::Int, nDAQ::Int) =
 #    short* SD_AIN_DAQbufferGet(int moduleID, int nDAQ, int &readPointsOut, int &errorOut);
 
