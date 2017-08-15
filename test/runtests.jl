@@ -1,4 +1,4 @@
-using KeysightDigitizer
+using KeysightInstruments
 using Base.Test
 
 # write your own tests here
