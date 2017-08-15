@@ -1,5 +1,17 @@
 # SD_AIN Functions
 export SD_AIN_channelInputConfig, SD_AIN_channelPrescalerConfig
+export SD_AIN_channelTriggerConfig, SD_AIN_DAQconfig, SD_AIN_DAQdigitalTriggerConfig
+export SD_AIN_DAQanalogTriggerConfig, SD_AIN_DAQread, SD_AIN_DAQstart
+export SD_AIN_DAQstartMultiple, SD_AIN_DAQstop, SD_AIN_DAQstopMultiple
+export SD_AIN_DAQpause, SD_AIN_DAQpauseMultiple, SD_AIN_DAQresume
+export SD_AIN_DAQresumeMultiple, SD_AIN_DAQflush, SD_AIN_DAQflushMultiple
+export SD_AIN_DAQtrigger, SD_AIN_DAQtriggerMultiple, SD_AIN_DAQcounterRead
+export SD_AIN_triggerIOconfig, SD_AIN_triggerIOwrite, SD_AIN_triggerIOread
+export SD_AIN_clockSetFrequency, SD_AIN_clockGetFrequency, SD_AIN_clockGetSyncFrequency
+export SD_AIN_clockResetPhase, SD_AIN_DAQbufferPoolConfig, SD_AIN_DAQbufferAdd
+export SD_AIN_DAQbufferGet, SD_AIN_DAQbufferRelease, SD_AIN_DAQbufferRemove
+export SD_AIN_FFT 
+
 ## channelInputConfig
 """
 This function configures the input full scale, impedance and coupling as
