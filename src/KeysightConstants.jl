@@ -191,14 +191,14 @@ maintained --> AOU_OFF = 0 (default)
 - Partner Channel : Only for odd channels. It is the output of the previous
 channel (to create differential signals, etc.) --> AOU_PARTNER = 8
 """
-const AOU_HIZ               = Cint(-1)
-const AOU_OFF               = Cint(0)
-const AOU_SINUSOIDAL        = Cint(1)
-const AOU_TRIANGULAR        = Cint(2)
-const AOU_SQUARE            = Cint(4)
-const AOU_DC                = Cint(5)
-const AOU_AWG               = Cint(6)
-const AOU_PARTNER           = Cint(8)
+const AOU_HIZ                       = Cint(-1)
+const AOU_OFF                       = Cint(0)
+const AOU_SINUSOIDAL                = Cint(1)
+const AOU_TRIANGULAR                = Cint(2)
+const AOU_SQUARE                    = Cint(4)
+const AOU_DC                        = Cint(5)
+const AOU_AWG                       = Cint(6)
+const AOU_PARTNER                   = Cint(8)
 
 """
 ## Modulation Options
@@ -232,8 +232,8 @@ const AOU_MOD_OFFSET                = Cint(2)
 M32/M33XXA AWGs output clock configuration. Parameter `clockConfig` in function
 `clockIOconfig` in `SD_AOU.jl`
 """
-const CLK_CONN_DISABLED                 = Cint(0)
-const CLK_REF_OUTPUT                    = Cint(1)
+const CLK_CONN_DISABLED             = Cint(0)
+const CLK_REF_OUTPUT                = Cint(1)
 
 """
 ## AWG Waveform Types
