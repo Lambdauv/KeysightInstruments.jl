@@ -20,7 +20,7 @@ components (I and Q) --> WAVE_IQ = 2
 doubles, with two components (Module and Phase) --> WAVE_IQPOLAR = 3
 - Digital : Digital waveforms defined with integers --> WAVE_DIGITAL = 5
 """
-SD_Wave_newFromArrayDouble(waveformType::Int, waveformPoints::Int,
+SD_Wave_newFromArrayDouble(waveformType::Integer, waveformPoints::Integer,
     waveformDataA::Array{Float64}, waveformDataB::Array{Float64}=0) =
     ccall((:SD_Wave_newFromArrayDouble, lib), Cint,
         (Cint, Cint, Ref{Cdouble}, Ref{Cdouble}),
@@ -37,5 +37,5 @@ SD_Wave_newFromFile(waveformFile::String) =
 """
 This function removes a waveform created with the function.
 """
-SD_Wave_delete(waveformID::Int) =
+SD_Wave_delete(waveformID::Integer) =
     ccall((:SD_Wave_delete, lib), Cint, (Cint,), waveformID)

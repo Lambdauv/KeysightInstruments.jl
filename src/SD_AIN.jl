@@ -23,8 +23,8 @@ applicable according to the product.
 - DC : DC coupling --> AIN_COUPLING_DC = 0
 - AC : AC coupling --> AIN_COUPLING_AC = 1
 """
-SD_AIN_channelInputConfig(moduleID::Int, nChannel::Int, fullScale::Float64,
-	coupling::Int) =
+SD_AIN_channelInputConfig(moduleID::Integer, nChannel::Integer, fullScale::Float64,
+	coupling::Integer) =
 	ccall((:SD_AIN_channelInputConfig, lib), Cint, (Cint, Cint, Cdouble, Cint),
 		moduleID, nChannel, fullScale, coupling)
 
@@ -32,7 +32,7 @@ SD_AIN_channelInputConfig(moduleID::Int, nChannel::Int, fullScale::Float64,
 """
 This function configures the input prescaler.
 """
-SD_AIN_channelPrescalerConfig(moduleID::Int, nChannel::Int, prescaler::Int) =
+SD_AIN_channelPrescalerConfig(moduleID::Integer, nChannel::Integer, prescaler::Integer) =
 	ccall((:SD_AIN_channelPrescalerConfig, lib), Cint, (Cint, Cint, Cint),
 		moduleID, nChannel, prescaler)
 
@@ -47,8 +47,8 @@ crosses the threshold --> AIN_FALLING_EDGE = 1
 - Both Edges : Trigger is generated when the input signal crosses the threshold,
 no matter if it is rising or falling --> AIN_BOTH_EDGES = 3
 """
-SD_AIN_channelTriggerConfig(moduleID::Int, nChannel::Int,
-	analogTriggerMode::Int, threshold::Float64) =
+SD_AIN_channelTriggerConfig(moduleID::Integer, nChannel::Integer,
+	analogTriggerMode::Integer, threshold::Float64) =
 	ccall((:SD_AIN_channelTriggerConfig, lib), Cint, (Cint, Cint, Cint,
 		Cdouble), moduleID, nChannel, analogTriggerMode, threshold)
 
@@ -74,8 +74,8 @@ digital trigger --> HWDIGTRIG = 2
 - Hardware Analog Trigger : Hardware trigger. The DAQ waits for an external
 analog trigger (only products with analog inputs) --> HWANATRIG = 3
 """
-SD_AIN_DAQconfig(moduleID::Int, nDAQ::Int, DAQpointsPerCycle::Int, cycles::Int,
-	triggerDelay::Int, triggerMode::Int) =
+SD_AIN_DAQconfig(moduleID::Integer, nDAQ::Integer, DAQpointsPerCycle::Integer, cycles::Integer,
+	triggerDelay::Integer, triggerMode::Integer) =
 	ccall((:SD_AIN_DAQconfig, lib), Cint, (Cint, Cint, Cint, Cint, Cint, Cint),
 		moduleID, nDAQ, DAQpointsPerCycle, cycles, triggerDelay, triggerMode)
 
@@ -94,8 +94,8 @@ and it is synchronized to CLK10 --> TRIG_PXI = 1
 - Rising Edge : Trigger is active on the rising edge --> TRIG_RISE = 3
 - Falling Edge : Trigger is active on the falling edge --> TRIG_FALL = 4
 """
-SD_AIN_DAQdigitalTriggerConfig(moduleID::Int, nDAQ::Int, triggerSource::Int,
-	triggerNumber::Int, triggerBehavior::Int) =
+SD_AIN_DAQdigitalTriggerConfig(moduleID::Integer, nDAQ::Integer, triggerSource::Integer,
+	triggerNumber::Integer, triggerBehavior::Integer) =
 	ccall((:SD_AIN_DAQdigitalTriggerConfig, lib), Cint, (Cint, Cint, Cint, Cint,
 		Cint), moduleID, nDAQ, triggerSource, triggerNumber, triggerBehavior)
 
@@ -103,7 +103,7 @@ SD_AIN_DAQdigitalTriggerConfig(moduleID::Int, nDAQ::Int, triggerSource::Int,
 """
 This function configures the analog hardware trigger for the selected DAQ.
 """
-SD_AIN_DAQanalogTriggerConfig(moduleID::Int, nDAQ::Int, triggerNumber::Int) =
+SD_AIN_DAQanalogTriggerConfig(moduleID::Integer, nDAQ::Integer, triggerNumber::Integer) =
 	ccall((:SD_AIN_DAQanalogTriggerConfig, lib), Cint, (Cint, Cint, Cint),
 		moduleID, nDAQ, triggerNumber)
 
@@ -116,7 +116,7 @@ of words is acquired, or when the configured timeout elapses (if timeout is set
 to ”0” , then DAQread waits until DAQpoints are acquired). In the timeout
 elapses, there may be words available, but less than the configured amount.
 """
-function SD_AIN_DAQread(moduleID::Int, nDAQ::Int, DAQpoints::Int, timeout::Int)
+function SD_AIN_DAQread(moduleID::Integer, nDAQ::Integer, DAQpoints::Integer, timeout::Integer)
 	DAQdata = Vector{Cshort}(DAQpoints) 	# Create an array to retrieve data
 	# DAQdata contains DAQpoints words. Its size is DAQpoints × 2bytes/word.
  	val = ccall((:SD_AIN_DAQread, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
@@ -133,7 +133,7 @@ end
 This function starts acquisition on the selected DAQ. Acquisition will start
 when a trigger is received.
 """
-SD_AIN_DAQstart(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQstart(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQstart, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQstartMultiple
@@ -141,7 +141,7 @@ SD_AIN_DAQstart(moduleID::Int, nDAQ::Int) =
 This function starts acquisition on the selected DAQs. Acquisition will start
 when a trigger is received.
 """
-SD_AIN_DAQstartMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQstartMultiple(moduleID::Integer, DAQmask::Integer) =
 	ccall((:SD_AIN_DAQstartMultiple, lib), Cint, (Cint, Cint),
 		moduleID, DAQmask)
 
@@ -149,14 +149,14 @@ SD_AIN_DAQstartMultiple(moduleID::Int, DAQmask::Int) =
 """
 This function stops the words acquisition on the selected DAQ.
 """
-SD_AIN_DAQstop(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQstop(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQstop, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQstopMultiple
 """
 This function pauses the words acquisition on the selected DAQs.
 """
-SD_AIN_DAQstopMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQstopMultiple(moduleID::Integer, DAQmask::Integer) =
 	ccall((:SD_AIN_DAQstopMultiple, lib), Cint, (Cint, Cint),
 		moduleID, DAQmask)
 
@@ -165,7 +165,7 @@ SD_AIN_DAQstopMultiple(moduleID::Int, DAQmask::Int) =
 This function pauses the words acquisition on the selected DAQ. Acquisition can
 be resumed using DAQresume.
 """
-SD_AIN_DAQpause(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQpause(moduleID::Integer, nDAQ::Integer) =
     ccall((:SD_AIN_DAQpause, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQpauseMultiple
@@ -173,7 +173,7 @@ SD_AIN_DAQpause(moduleID::Int, nDAQ::Int) =
 This function pauses the words acquisition on the selected DAQs. Acquisition can
 be resumed using DAQresume.
 """
-SD_AIN_DAQpauseMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQpauseMultiple(moduleID::Integer, DAQmask::Integer) =
     ccall((:SD_AIN_DAQpauseMultiple, lib), Cint, (Cint, Cint),
         moduleID, DAQmask)
 
@@ -181,14 +181,14 @@ SD_AIN_DAQpauseMultiple(moduleID::Int, DAQmask::Int) =
 """
 This function resumes acquisition on the selected DAQ.
 """
-SD_AIN_DAQresume(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQresume(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQresume, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQresumeMultiple
 """
 This function resumes acquisition on the selected DAQs.
 """
-SD_AIN_DAQresumeMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQresumeMultiple(moduleID::Integer, DAQmask::Integer) =
     ccall((:SD_AIN_DAQresumeMultiple, lib), Cint, (Cint, Cint),
         moduleID, DAQmask)
 
@@ -197,7 +197,7 @@ SD_AIN_DAQresumeMultiple(moduleID::Int, DAQmask::Int) =
 This function flushes the acquisition buffers and resets the acquisition counter
 included in a Data Acquisition block.
 """
-SD_AIN_DAQflush(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQflush(moduleID::Integer, nDAQ::Integer) =
     ccall((:SD_AIN_DAQflush, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQflushMultiple
@@ -205,7 +205,7 @@ SD_AIN_DAQflush(moduleID::Int, nDAQ::Int) =
 This function flushes the acquisition buffers and resets the acquisition counter
 included in a Data Acquisition block.
 """
-SD_AIN_DAQflushMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQflushMultiple(moduleID::Integer, DAQmask::Integer) =
     ccall((:SD_AIN_DAQflushMultiple, lib), Cint, (Cint, Cint),
         moduleID, DAQmask)
 
@@ -214,7 +214,7 @@ SD_AIN_DAQflushMultiple(moduleID::Int, DAQmask::Int) =
 This function triggers the acquisition of words in the selected DAQs provided
 that they are configured for VI/HVI Trigger.
 """
-SD_AIN_DAQtrigger(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQtrigger(moduleID::Integer, nDAQ::Integer) =
     ccall((:SD_AIN_DAQtrigger, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQtriggerMultiple
@@ -222,7 +222,7 @@ SD_AIN_DAQtrigger(moduleID::Int, nDAQ::Int) =
 This function triggers the acquisition of words in the selected DAQs provided
 that they are configured for VI/HVI Trigger.
 """
-SD_AIN_DAQtriggerMultiple(moduleID::Int, DAQmask::Int) =
+SD_AIN_DAQtriggerMultiple(moduleID::Integer, DAQmask::Integer) =
     ccall((:SD_AIN_DAQtriggerMultiple, lib), Cint, (Cint, Cint),
         moduleID, DAQmask)
 
@@ -231,7 +231,7 @@ SD_AIN_DAQtriggerMultiple(moduleID::Int, DAQmask::Int) =
 This function reads the number of words acquired by the selected DAQ since the
 last call to DAQflush or DAQ.
 """
-SD_AIN_DAQcounterRead(moduleID::Int, DAQ::Int) =
+SD_AIN_DAQcounterRead(moduleID::Integer, DAQ::Integer) =
     ccall((:SD_AIN_DAQcounterRead, lib), Cint, (Cint, Cint), moduleID, DAQ)
 
 ## triggerIOconfig
@@ -249,7 +249,7 @@ input signal, which can be read by the user software --> AOU_TRIG_IN = 1
 - Synchronized mode : (PXI form factor only) The trigger is sampled using CLK10
 --> SYNC_CLK_0 = 1
 """
-SD_AIN_triggerIOconfig(moduleID::Int, direction::Int, syncMode::Int) =
+SD_AIN_triggerIOconfig(moduleID::Integer, direction::Integer, syncMode::Integer) =
     ccall((:SD_AIN_triggerIOconfig, lib), Cint, (Cint, Cint, Cint),
         moduleID, direction, syncMode)
 
@@ -258,14 +258,14 @@ SD_AIN_triggerIOconfig(moduleID::Int, direction::Int, syncMode::Int) =
 This function sets the trigger output. The trigger must be configured as output
 using function triggerIOconfig and I/O Triggers.
 """
-SD_AIN_triggerIOwrite(moduleID::Int, value::Int) =
+SD_AIN_triggerIOwrite(moduleID::Integer, value::Integer) =
     ccall((:SD_AIN_triggerIOwrite, lib), Cint, (Cint, Cint), moduleID, value)
 
 ## triggerIOread
 """
 This function reads the trigger input.
 """
-SD_AIN_triggerIOread(moduleID::Int) =
+SD_AIN_triggerIOread(moduleID::Integer) =
     ccall((:SD_AIN_triggerIOread, lib), Cint, (Cint,), moduleID)
 
 ## clockSetFrequency
@@ -278,7 +278,7 @@ sacrificing tuning speed --> CLK_LOW_JITTER = 0
 - Fast Tuning Mode : The clock system is set to achieve the lowest tuning time,
 sacrificing jitter performance --> CLK_FAST_TUNE = 1
 """
-SD_AIN_clockSetFrequency(moduleID::Int, frequency::Float64, mode::Int) =
+SD_AIN_clockSetFrequency(moduleID::Integer, frequency::Float64, mode::Integer) =
     ccall((:SD_AIN_clockSetFrequency, lib), Cdouble, (Cint, Cdouble, Cint),
         moduleID, frequency, mode)
 
@@ -288,14 +288,14 @@ This function returns the real hardware clock frequency. It may differ from the
 frequency set with the function clockSetFrequency, due to the hardware
 frequency resolution.
 """
-SD_AIN_clockGetFrequency(moduleID::Int) =
+SD_AIN_clockGetFrequency(moduleID::Integer) =
 	ccall((:SD_AIN_clockGetFrequency, lib), Cdouble, (Cint,), moduleID)
 
 ## clockGetSyncFrequency
 """
 This function returns the frequency of Clock System.
 """
-SD_AIN_clockGetSyncFrequency(moduleID::Int) =
+SD_AIN_clockGetSyncFrequency(moduleID::Integer) =
 	ccall((:SD_AIN_clockGetSyncFrequency, lib), Cint, (Cint,), moduleID)
 
 ## clockResetPhase
@@ -303,7 +303,7 @@ SD_AIN_clockGetSyncFrequency(moduleID::Int) =
 This function sets the module in a sync state, waiting for the first trigger to
 reset the phase of the internal clocks CLKsync and CLKsys.
 """
-SD_AIN_clockResetPhase(moduleID::Int, triggerBehavior::Int, PXItrigger::Int,
+SD_AIN_clockResetPhase(moduleID::Integer, triggerBehavior::Integer, PXItrigger::Integer,
 	skew::Float64) =
 	ccall((:SD_AIN_clockResetPhase, lib), Cint, (Cint, Cint, Cint, Cdouble),
 		moduleID, triggerBehavior, PXItrigger, skew)
@@ -313,8 +313,8 @@ SD_AIN_clockResetPhase(moduleID::Int, triggerBehavior::Int, PXItrigger::Int,
 #This function configures buffer pool that will be filled with the data of the
 #channel to be transferred to PC.
 #"""
-#function SD_AIN_DAQbufferPoolConfig(moduleID::Int, nDAQ::Int, nPoints::Int,
-#	timeOut::Int)
+#function SD_AIN_DAQbufferPoolConfig(moduleID::Integer, nDAQ::Integer, nPoints::Integer,
+#	timeOut::Integer)
 #	dataBuffer = Vector{Cshort}(nPoints)
 #	val = ccall((:SD_AIN_DAQbufferPoolConfig, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint, Cint, , Void))
 # int SD_AIN_DAQbufferPoolConfig(int moduleID, int nDAQ,short* dataBuffer, int nPoints, int timeOut, callbackEventPtr callbackFunction,void *callbackUserObj);
@@ -323,8 +323,8 @@ SD_AIN_clockResetPhase(moduleID::Int, triggerBehavior::Int, PXItrigger::Int,
 """
 Adds an additional buffer to the channel’s previously configured pool.
 """
-function SD_AIN_DAQbufferAdd(moduleID::Int, nDAQ::Int,
-	dataBuffer::Vector{Int16}, nPoints::Int)
+function SD_AIN_DAQbufferAdd(moduleID::Integer, nDAQ::Integer,
+	dataBuffer::Vector{Int16}, nPoints::Integer)
 	nPoints = length(dataBuffer)
 	val = ccall((:SD_AIN_DAQbufferAdd, lib), Cint, (Cint, Cint, Ref{Cshort}, Cint),
 		moduleID, nDAQ, dataBuffer, nPoints)
@@ -336,7 +336,7 @@ end
 #Gets a filled buffer from the channel buffer pool. User has to call DAQbufferAdd
 #with this buffer to tell the pool that the buffer can be used again.
 #"""
-#SD_AIN_DAQbufferGet(moduleID::Int, nDAQ::Int) =
+#SD_AIN_DAQbufferGet(moduleID::Integer, nDAQ::Integer) =
 #    short* SD_AIN_DAQbufferGet(int moduleID, int nDAQ, int &readPointsOut, int &errorOut);
 
 ## DAQbufferPoolRelease
@@ -344,7 +344,7 @@ end
 Releases the channel buffer pool and its resources. After this call, user has to
 call DAQbufferRemove consecutively to get all buffers back and release them.
 """
-SD_AIN_DAQbufferRelease(moduleID::Int, nDAQ::Int) =
+SD_AIN_DAQbufferRelease(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQbufferRelease, lib), Cint, (Cint, Cint), moduleID, nDAQ)
 
 ## DAQbufferPoolRemove
@@ -353,7 +353,7 @@ Ask for a buffer to be removed from the channel buffer pool. If NULL pointer is
 returned, no more buffers remains in buffer pool. Returned buffer is a
 previously added buffer from user and user has to release/delete it.
 """
-function SD_AIN_DAQbufferRemove(moduleID::Int, nDAQ::Int)
+function SD_AIN_DAQbufferRemove(moduleID::Integer, nDAQ::Integer)
 	ptr = ccall((:SD_AIN_DAQbufferRemove, lib), Ptr{Cshort}, (Cint, Cint),
 		moduleID, nDAQ)
 	return unsafe_load(ptr)
@@ -376,8 +376,8 @@ require windowing by the convolution in the frequency-domain
 - Gauss : Adjustable window (can be used for quadratic interpolation in
 frequency estimation) --> WINDOW_GAUSS = 6
 """
-function SD_AIN_FFT(moduleID::Int, channel::Int, data::Array{Int16}, dB::Bool,
-    windowType::Int)
+function SD_AIN_FFT(moduleID::Integer, channel::Integer, data::Array{Int16}, dB::Bool,
+    windowType::Integer)
 	dataSize = length(data)
 	resultSize = dataSize
 	resultMag = Vector{Cdouble}(resultSize)

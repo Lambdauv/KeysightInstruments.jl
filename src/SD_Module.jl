@@ -25,17 +25,17 @@ SD_Module_openWithSerialNumber(productName::String, serialNumber::String) =
     ccall((:SD_Module_openWithSerialNumber, lib), Cint, (Cstring, Cstring),
         productName, serialNumber)
 
-SD_Module_openWithSlot(productName::String, chassis::Int, slot::Int) =
+SD_Module_openWithSlot(productName::String, chassis::Integer, slot::Integer) =
     ccall((:SD_Module_openWithSlot, lib), Cint, (Cstring, Cint, Cint),
         productName, chassis, slot)
 
 SD_Module_openWithSerialNumberCompatibility(productName::String,
-    serialNumber::String, compatibility::Int) =
+    serialNumber::String, compatibility::Integer) =
     ccall((:SD_Module_openWithSerialNumberCompatibility, lib), Cint,
         (Cstring, Cstring, Cint), productName, serialNumber, compatibility)
 
-SD_Module_openWithSlotCompatibility(productName::String, chassis::Int,
-    slot::Int, compatibility::Int) =
+SD_Module_openWithSlotCompatibility(productName::String, chassis::Integer,
+    slot::Integer, compatibility::Integer) =
     ccall((:SD_Module_openWithSlotCompatibility, lib), Cint, (Cstring, Cint,
         Cint, Cint), productName, chassis, slot, compatibility)
 
@@ -44,7 +44,7 @@ SD_Module_openWithSlotCompatibility(productName::String, chassis::Int,
 This function releases all the resources allocated for the module instance. It
 must be always called before exiting the application.
 """
-SD_Module_close(moduleID::Int) =
+SD_Module_close(moduleID::Integer) =
     ccall((:SD_Module_close, lib), Cint, (Cint,), moduleID)
 
 ## moduleCount
@@ -58,7 +58,7 @@ SD_Module_moduleCount() =
 """
 This function returns the product name of the specified device.
 """
-function SD_Module_getProductNameByIndex(index::Int)
+function SD_Module_getProductNameByIndex(index::Integer)
     productName = Vector{UInt8}(128)
     val = ccall((:SD_Module_getProductNameByIndex, lib), Cint,
 		(Cint, Ptr{UInt8}), index, productName)
@@ -70,7 +70,7 @@ function SD_Module_getProductNameByIndex(index::Int)
 	end
 end
 
-function SD_Module_getProductNameBySlot(chassis::Int, slot::Int)
+function SD_Module_getProductNameBySlot(chassis::Integer, slot::Integer)
     productName = Vector{UInt8}(128)
 	val = ccall((:SD_Module_getProductNameBySlot, lib), Cint,
 		(Cint, Cint, Ptr{UInt8}), chassis, slot, productName)
@@ -86,7 +86,7 @@ end
 """
 This function returns the serial number of the specified device.
 """
-function SD_Module_getSerialNumberByIndex(index::Int)
+function SD_Module_getSerialNumberByIndex(index::Integer)
 	serialNumber = Vector{UInt8}(128)
 	val = ccall((:SD_Module_getSerialNumberByIndex, lib), Cint,
 		(Cint, Ptr{UInt8}), index, serialNumber)
@@ -98,7 +98,7 @@ function SD_Module_getSerialNumberByIndex(index::Int)
 	end
 end
 
-function SD_Module_getSerialNumberBySlot(chassis::Int, slot::Int)
+function SD_Module_getSerialNumberBySlot(chassis::Integer, slot::Integer)
 	serialNumber = Vector{UInt8}
 	val = ccall((:SD_Module_getSerialNumberBySlot, lib), Cint,
 		(Cint, Cint, Ptr{UInt8}), chassis, slot, serialNumber)
@@ -114,14 +114,14 @@ end
 """
 This function returns the chassis number where the device is located.
 """
-SD_Module_getChassis(index::Int) =
+SD_Module_getChassis(index::Integer) =
 	ccall((:SD_Module_getChassis, lib), Cint, (Cint,), index)
 
 ## getSlot
 """
 This function returns the slot number where the device is located.
 """
-SD_Module_getSlot(index::Int) =
+SD_Module_getSlot(index::Integer) =
 	ccall((:SD_Module_getSlot, lib), Cint, (Cint,), index)
 
 ## PXItriggerWrite
@@ -129,7 +129,7 @@ SD_Module_getSlot(index::Int) =
 This function sets the digital value of a PXI trigger in the PXI backplane.
 This function is only available in PXI / PXI Express form factors.
 """
-SD_Module_PXItriggerWrite(moduleID::Int, nPXItrigger::Int, value::Int) =
+SD_Module_PXItriggerWrite(moduleID::Integer, nPXItrigger::Integer, value::Integer) =
 	ccall((:SD_Module_PXItriggerWrite, lib), Cint, (Cint, Cint, Cint),
 		moduleID, nPXItrigger, value)
 
@@ -138,7 +138,7 @@ SD_Module_PXItriggerWrite(moduleID::Int, nPXItrigger::Int, value::Int) =
 This function reads the digital value of a PXI trigger in the PXI backplane.
 This function is only available in PXI / PXI Express form factors.
 """
-SD_Module_PXItriggerRead(moduleID::Int, nPXItrigger::Int) =
+SD_Module_PXItriggerRead(moduleID::Integer, nPXItrigger::Integer) =
 	ccall((:SD_Module_PXItriggerRead, lib), Cint, (Cint, Cint),
 		moduleID, nPXItrigger)
 
@@ -147,8 +147,8 @@ SD_Module_PXItriggerRead(moduleID::Int, nPXItrigger::Int) =
 """
 This function writes data at the PCport FPGA Block.
 """
-SD_Module_FPGAwritePCport(moduleID::Int, nPCport::Int, data::Int,
-    dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
+SD_Module_FPGAwritePCport(moduleID::Integer, nPCport::Integer, data::Integer,
+    dataSize::Integer, address::Integer, addressMode::Integer, accessMode::Integer) =
     ccall((:SD_Module_FPGAwritePCport, lib), Cint,
         (Cint, Cint, Ptr{Clong}, Cint,Cint, Cint, Cint),
         moduleID, nPCport, data, dataSize, address, addressMode, accessMode)
@@ -157,8 +157,8 @@ SD_Module_FPGAwritePCport(moduleID::Int, nPCport::Int, data::Int,
 """
 This function reads data at the PCport FPGA Block.
 """
-SD_Module_FPGAreadPCport(moduleID::Int, nPCport::Int, data,
-    dataSize::Int, address::Int, addressMode::Int, accessMode::Int) =
+SD_Module_FPGAreadPCport(moduleID::Integer, nPCport::Integer, data,
+    dataSize::Integer, address::Integer, addressMode::Integer, accessMode::Integer) =
     ccall((:SD_Module_FPGAreadPCport, lib), Cint,
         (Cint, Cint, Ptr{Cint}, Cint, Cint, Cint, Cint),
         moduleID, nPCport, data, dataSize, address, addressMode, accessMode)
@@ -168,20 +168,20 @@ SD_Module_FPGAreadPCport(moduleID::Int, nPCport::Int, data,
 """
 This function writes a value in an HVI register of a hardware module.
 """
-SD_Module_writeRegister(moduleID::Int, regNumber::Int, regValue::Int) =
+SD_Module_writeRegister(moduleID::Integer, regNumber::Integer, regValue::Integer) =
 	ccall((:SD_Module_writeRegister, lib), Cint, (Cint, Cint, Cint),
 		moduleID, regNumber, regValue)
 
-SD_Module_writeRegisterWithName(moduleID::Int, regName::String, regValue::Int) =
+SD_Module_writeRegisterWithName(moduleID::Integer, regName::String, regValue::Integer) =
 	ccall((:SD_Module_writeRegisterWithName, lib), Cint, (Cint, Cstring, Cint),
 		moduleID, regName, regValue)
 
-SD_Module_writeDoubleRegister(moduleID::Int, regNumber::Int, regValue::Float64,
+SD_Module_writeDoubleRegister(moduleID::Integer, regNumber::Integer, regValue::Float64,
 	unit::String) =
 	ccall((:SD_Module_writeDoubleRegister, lib), Cint, (Cint, Cint, Cdouble,
 		Cstring), moduleID, regNumber, regValue, unit)
 
-SD_Module_writeDoubleRegisterWithName(moduleID::Int, regName::String,
+SD_Module_writeDoubleRegisterWithName(moduleID::Integer, regName::String,
 	regValue::Float64, unit::String) =
 	ccall((:SD_Module_writeDoubleRegisterWithName, lib), Cint, (Cint, Cstring,
 			Cdouble, Cstring), moduleID, regName, regValue, unit)
@@ -190,15 +190,15 @@ SD_Module_writeDoubleRegisterWithName(moduleID::Int, regName::String,
 """
 This function reads a value from an HVI register of a hardware module.
 """
-SD_Module_readRegister(moduleID::Int, regNumber::Int, regValue::Int) =
+SD_Module_readRegister(moduleID::Integer, regNumber::Integer, regValue::Integer) =
 	ccall((:SD_Module_readRegister, lib), Cint, (Cint, Cint, Cint),
 		moduleID, regNumber, regValue)
 
-SD_Module_readRegisterWithName(moduleID::Int, regName::String, regValue::Int) =
+SD_Module_readRegisterWithName(moduleID::Integer, regName::String, regValue::Integer) =
 	ccall((:SD_Module_readRegisterWithName, lib), Cint, (Cint, Cstring, Cint),
 		moduleID, regName, regValue)
 
-function SD_Module_readDoubleRegister(moduleID::Int, regNumber::Int,
+function SD_Module_readDoubleRegister(moduleID::Integer, regNumber::Integer,
 	unit::String)
 	errorOut = Cint(0)
 	regValue = ccall((:SD_Module_readDoubleRegister, lib), Cdouble, (Cint, Cint,
@@ -206,7 +206,7 @@ function SD_Module_readDoubleRegister(moduleID::Int, regNumber::Int,
 	return errorOut, regValue
 end
 
-function SD_Module_readDoubleRegisterWithName(moduleID::Int, regName::String,
+function SD_Module_readDoubleRegisterWithName(moduleID::Integer, regName::String,
 	unit::String)
 	errorOut = Cint(0)
 	regValue = ccall((:SD_Module_readDoubleRegisterWithName, lib), Cdouble,
