@@ -310,13 +310,13 @@ of words is acquired, or when the configured timeout elapses (if timeout is set
 to ”0” , then DAQread waits until DAQpoints are acquired). In the timeout
 elapses, there may be words available, but less than the configured amount.
 """
-function SD_AIN_DAQread(moduleID::Integer, nDAQ::Integer, nPoints::Integer, timeOut::Integer)
+function SD_AIN_DAQread(moduleID::Integer, nDAQ::Integer, nPoints::Integer, timeOut::Integer=0)
 	dataBuffer = Vector{Cshort}(nPoints) 	# Create an array to retrieve data
 	# dataBuffer contains nPoints words. Its size is nPoints × 2bytes/word.
  	val = ccall((:SD_AIN_DAQread, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
 		Cint), moduleID, nDAQ, dataBuffer, nPoints, timeOut)
-	if val >= 0
-		return DAQdata
+	if val > 0
+		return dataBuffer
 	else
 		return val
 	end
@@ -334,16 +334,19 @@ SD_AIN_DAQcounterRead(moduleID::Integer, nDAQ::Integer) =
 SD_AIN_DAQnPoints(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQnPoints, klib), Cint, (Cint, Cint), moduleID, nDAQ)
 
-## TODO int SD_AIN_DAQbufferPoolConfig(int moduleID, int nDAQ, short *dataBuffer, int nPoints, int timeOut SD_DEFAULT_NULL, callbackEventPtr callbackFunction SD_DEFAULT_NULL, void *callbackUserObj SD_DEFAULT_NULL);
+## int SD_AIN_DAQbufferPoolConfig(int moduleID, int nDAQ, short *dataBuffer, int nPoints, int timeOut SD_DEFAULT_NULL, callbackEventPtr callbackFunction SD_DEFAULT_NULL, void *callbackUserObj SD_DEFAULT_NULL);
 """
 This function configures buffer pool that will be filled with the data of the
 channel to be transferred to PC.
 """
-#function SD_AIN_DAQbufferPoolConfig(moduleID::Integer, nDAQ::Integer, nPoints::Integer,
-#	timeOut::Integer)
-#	dataBuffer = Vector{Cshort}(nPoints)
-#	val = ccall((:SD_AIN_DAQbufferPoolConfig, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint, Cint, , Void))
-# int SD_AIN_DAQbufferPoolConfig(int moduleID, int nDAQ,short* dataBuffer, int nPoints, int timeOut, callbackEventPtr callbackFunction,void *callbackUserObj);
+function SD_AIN_DAQbufferPoolConfig(moduleID::Integer, nDAQ::Integer, nPoints::Integer,
+	timeOut::Integer=0)
+	dataBuffer = Vector{Cshort}(nPoints)
+	val = ccall((:SD_AIN_DAQbufferPoolConfig, klib), Cint,
+		(Cint, Cint, Ref{Cshort}, Cint, Cint, Ptr{Void}, Ptr{Void}),
+		moduleID, nDAQ, dataBuffer, nPoints, timeOut, C_NULL, C_NULL)
+	return val
+end
 
 ## int SD_AIN_DAQbufferPoolRelease(int moduleID, int nDAQ);
 """
@@ -353,38 +356,51 @@ call DAQbufferRemove consecutively to get all buffers back and release them.
 SD_AIN_DAQbufferPoolRelease(moduleID::Integer, nDAQ::Integer) =
 	ccall((:SD_AIN_DAQbufferPoolRelease, klib), Cint, (Cint, Cint), moduleID, nDAQ)
 
-## TODO int SD_AIN_DAQbufferAdd(int moduleID, int nDAQ, short *dataBuffer, int nPoints);
+## int SD_AIN_DAQbufferAdd(int moduleID, int nDAQ, short *dataBuffer, int nPoints);
 """
 Adds an additional buffer to the channel’s previously configured pool.
 """
-#function SD_AIN_DAQbufferAdd(moduleID::Integer, nDAQ::Integer,
-#	dataBuffer::Vector{Int16}, nPoints::Integer)
-#	nPoints = length(dataBuffer)
-#	val = ccall((:SD_AIN_DAQbufferAdd, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint),
-#		moduleID, nDAQ, dataBuffer, nPoints)
-#	return val
-#end
+function SD_AIN_DAQbufferAdd(moduleID::Integer, nDAQ::Integer,
+	dataBuffer::Vector{Int16}, nPoints::Integer)
+	nPoints = length(dataBuffer)
+	val = ccall((:SD_AIN_DAQbufferAdd, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint),
+		moduleID, nDAQ, dataBuffer, nPoints)
+	return val
+end
 
-## TODO short* SD_AIN_DAQbufferRemove(int moduleID, int nDAQ);
+## short* SD_AIN_DAQbufferRemove(int moduleID, int nDAQ);
 """
 Ask for a buffer to be removed from the channel buffer pool. If NULL pointer is
 returned, no more buffers remains in buffer pool. Returned buffer is a
 previously added buffer from user and user has to release/delete it.
 """
-#function SD_AIN_DAQbufferRemove(moduleID::Integer, nDAQ::Integer)
-#	ptr = ccall((:SD_AIN_DAQbufferRemove, klib), Ptr{Cshort}, (Cint, Cint),
-#		moduleID, nDAQ)
-#	return unsafe_load(ptr)
-#end
+function SD_AIN_DAQbufferRemove(moduleID::Integer, nDAQ::Integer)
+	ptr = ccall((:SD_AIN_DAQbufferRemove, klib), Ptr{Cshort}, (Cint, Cint),
+		moduleID, nDAQ)
+	return unsafe_load(ptr)
+end
 
-## TODO short* SD_AIN_DAQbufferGet(int moduleID, int nDAQ, int SD_DLL_API_REF_C readPointsOut, int SD_DLL_API_REF_C errorOut);
-#"""
-#Gets a filled buffer from the channel buffer pool. User has to call DAQbufferAdd
-#with this buffer to tell the pool that the buffer can be used again.
-#"""
-#SD_AIN_DAQbufferGet(moduleID::Integer, nDAQ::Integer) =
-#    short* SD_AIN_DAQbufferGet(int moduleID, int nDAQ, int &readPointsOut, int &errorOut);
-
+## short* SD_AIN_DAQbufferGet(int moduleID, int nDAQ, int SD_DLL_API_REF_C readPointsOut, int SD_DLL_API_REF_C errorOut);
+"""
+Gets a filled buffer from the channel buffer pool. User has to call DAQbufferAdd
+with this buffer to tell the pool that the buffer can be used again.
+"""
+function SD_AIN_DAQbufferGet(moduleID::Integer, nDAQ::Integer)
+	errorOut = Cint(0)
+	readPointsOut = Cint(0)
+	ptr = ccall((:SD_AIN_DAQbufferGet, klib), Ptr{Cshort},
+		(Cint, Cint, Ref{Cint}, Ref{Cint}), moduleID, nDAQ, readPointsOut, errorOut)
+	if errorOut < 0
+		return errorOut
+	else:
+		nPoints = readPointsOut
+		if nPoints > 0
+			return Vector{Cshort}([unsafe_load(ptr, n) for n in 1:nPoints])
+		else
+			return Vector{Cshort}(0)
+		end
+	end
+end
 
 ## int SD_AIN_FFT(int moduleID, int channel, short *data, int size, double *result, int resultSize, double *resultPhase, SD_BOOL dB, int windowType);
 """
