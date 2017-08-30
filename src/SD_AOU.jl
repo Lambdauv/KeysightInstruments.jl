@@ -235,7 +235,6 @@ This function reads the trigger input.
 SD_AOU_triggerIOread(moduleID::Integer) =
     ccall((:SD_AOU_triggerIOread, klib), Cint, (Cint,), moduleID)
 
-# AWG
 ## int SD_AOU_waveformGetAddress(int moduleID, int waveformNumber);
 SD_AOU_waveformGetAddress(moduleID::Integer, waveformNumber::Integer) =
     ccall((:SD_AOU_waveformGetAddress, klib), Cint, (Cint, Cint),
@@ -521,8 +520,7 @@ option, but the trigger is required per each waveform cycle --> EXTTRIG_CYCLE = 
 """
 function SD_AOU_AWGfromArray(moduleID::Integer, nAWG::Integer, triggerMode::Integer,
     startDelay::Integer, cycles::Integer, prescaler::Integer, waveformType::Integer,
-    waveformDataA::Vector{Float64}, waveformDataB::Vector{Float64}=0,
-    paddingMode::Integer=0)
+    waveformDataA, waveformDataB=0, paddingMode::Integer=0)
     waveformPoints = length(waveformDataA)
     val = ccall((:SD_AOU_AWGfromArray, klib), Cint, (Cint, Cint, Cint, Cint,
         Cint, Cint, Cint, Cint, Ref{Cdouble}, Ref{Cdouble}), moduleID, nAWG,
