@@ -12,14 +12,13 @@ http://www.keysight.com/main/software.jspx?cc=US&lc=eng&nid=-33786.536905585&id=
 const klib = is_windows() ? "SD1core" : "libSD1core.so"
 
 
-"""
-keysightopen() = begin
-    @static begin
-        kHandle = Libdl.dlopen(klib)
-        keysightexit(()->Libdl.dlclose(kHandle))
-    end
-end
-"""
+
+#keysightopen() = begin
+#    @static begin
+#        kHandle = Libdl.dlopen(klib)
+#        keysightexit(()->Libdl.dlclose(kHandle))
+#    end
+#end
 
 # Keysight Constants
 include("KeysightConstants.jl")
