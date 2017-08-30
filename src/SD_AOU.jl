@@ -256,11 +256,12 @@ SD_AOU_waveformMemorySetWriteAddress(moduleID::Integer, writeAddress::Integer) =
 
 ## int SD_AOU_waveformReLoadArrayInt16(int moduleID, int waveformType, int waveformPoints, short *waveformDataRaw, int waveformNumber, int paddingMode SD_DEFAULT_NULL);
 function SD_AOU_waveformReLoadArrayInt16(moduleID::Integer, waveformType::Integer,
-    waveformDataRaw::Vector{Int16}, waveformNumber::Integer, paddingMode::Integer)
-    waveformPoints = length(waveformDataRaw)
+    waveformDataRaw::Vector, waveformNumber::Integer, paddingMode::Integer=0)
+    c_waveformDataRaw = Vector{Cshort}(waveformDataRaw)
+    waveformPoints = length(c_waveformDataRaw)
     val = ccall((:SD_AOU_waveformReLoadArrayInt16, klib), Cint,
         (Cint, Cint, Cint, Ref{Cshort}, Cint, Cint), moduleID, waveformType,
-        waveformPoints, waveformDataRaw, waveformNumber, paddingMode)
+        waveformPoints, c_waveformDataRaw, waveformNumber, paddingMode)
     return val
 end
 
@@ -270,17 +271,18 @@ This function replaces a waveform located in the module onboard RAM. The size of
 the new waveform must be smaller than or equal to the existing waveform.
 """
 SD_AOU_waveformReLoad(moduleID::Integer, waveformID::Integer, waveformNumber::Integer,
-    paddingMode::Integer) =
+    paddingMode::Integer=0) =
     ccall((:SD_AOU_waveformReLoad, klib), Cint, (Cint, Cint, Cint, Cint),
         moduleID, waveformID, waveformNumber, paddingMode)
 
 ## int SD_AOU_waveformLoadArrayInt16(int moduleID, int waveformType, int waveformPoints, short *waveformDataRaw, int waveformNumber, int paddingMode SD_DEFAULT_NULL);
 function SD_AOU_waveformLoadArrayInt16(moduleID::Integer, waveformType::Integer,
-    waveformDataRaw::Vector{Int16}, waveformNumber::Integer, paddingMode::Integer)
-    waveformPoints = length(waveformDataRaw) # Not sure..
+    waveformDataRaw::Vector, waveformNumber::Integer, paddingMode::Integer=0)
+    c_waveformDataRaw = Vector{Cshort}(waveformDataRaw)
+    waveformPoints = length(c_waveformDataRaw) # Not sure..
     val = ccall((:SD_AOU_waveformLoadArrayInt16, klib), Cint,
         (Cint, Cint, Cint, Ref{Cshort}, Cint, Cint), moduleID, waveformType,
-        waveformPoints, waveformDataRaw, waveformNumber, paddingMode)
+        waveformPoints, c_waveformDataRaw, waveformNumber, paddingMode)
     return val
 end
 
@@ -290,7 +292,7 @@ This function loads the specified waveform into the module onboard RAM.
 Waveforms must be created first with the SD-Wave class.
 """
 SD_AOU_waveformLoad(moduleID::Integer, waveformID::Integer,
-    waveformNumber::Integer, paddingMode::Integer) =
+    waveformNumber::Integer, paddingMode::Integer=0) =
     ccall((:SD_AOU_waveformLoad, klib), Cint, (Cint, Cint, Cint, Cint),
         moduleID, waveformID, waveformNumber, paddingMode)
 
@@ -313,9 +315,13 @@ SD_AOU_AWGqueueWaveform(moduleID::Integer, nAWG::Integer, waveformNumber::Intege
         Cint, Cint), moduleID, nAWG, waveformNumber, triggerMode, startDelay,
         cycles, prescaler)
 
-## TODO int SD_AOU_AWGstreamingConfig(int moduleID, int nAWG, int triggerMode, int startDelay, int prescaler, int waveformPoints, callbackWGPtr callbackFunction, void *callbackUserObj);
-#SD_AOU_AWGstreamingConfig(moduleID::Integer, nAWG::Integer, triggerMode::Integer,
-#    startDelay::Integer, prescaler::Integer, waveformPoints::Integer, )
+## int SD_AOU_AWGstreamingConfig(int moduleID, int nAWG, int triggerMode, int startDelay, int prescaler, int waveformPoints, callbackWGPtr callbackFunction, void *callbackUserObj);
+SD_AOU_AWGstreamingConfig(moduleID::Integer, nAWG::Integer, triggerMode::Integer,
+    startDelay::Integer, prescaler::Integer, waveformPoints::Integer) =
+    ccall((:SD_AOU_AWGstreamingConfig, klib), Cint,
+    (Cint, Cint, Cint, Cint, Cint, Cint, Ptr{Void}, Ptr{Void}),
+    moduleID, nAWG, triggerMode, startDelay, prescaler, waveformPoints,
+    C_NULL, C_NULL)
 
 ## int SD_AOU_AWGstreamingRelease(int moduleID, int nAWG);
 SD_AOU_AWGstreamingRelease(moduleID::Integer, nAWG::Integer) =
@@ -349,11 +355,12 @@ SD_AOU_waveformLoadP2PgetPhysicalAddress(moduleID::Integer) =
 
 ## int SD_AOU_waveformLoadP2PwriteDataTest(int moduleID, int wfType, int points, short *dataRaw, int paddingMode SD_DEFAULT_NULL);
 function SD_AOU_waveformLoadP2PwriteDataTest(moduleID::Integer, wfType::Integer,
-    dataRaw::Vector{Int16}, paddingMode::Integer)
-    points = length(dataRaw)
+    dataRaw::Vector, paddingMode::Integer)
+    c_dataRaw = Vector{Cshort}(dataRaw)
+    points = length(c_dataRaw)
     val = ccall((:SD_AOU_waveformLoadP2PwriteDataTest, klib), Cint,
         (Cint, Cint, Cint, Ref{Cshort}, Cint), moduleID, wfType, points,
-        dataRaw, paddingMode)
+        c_dataRaw, paddingMode)
     return val
 end
 
@@ -520,12 +527,14 @@ option, but the trigger is required per each waveform cycle --> EXTTRIG_CYCLE = 
 """
 function SD_AOU_AWGfromArray(moduleID::Integer, nAWG::Integer, triggerMode::Integer,
     startDelay::Integer, cycles::Integer, prescaler::Integer, waveformType::Integer,
-    waveformDataA, waveformDataB=0, paddingMode::Integer=0)
+    waveformDataA::Vector, waveformDataB::Vector=0, paddingMode::Integer=0)
     waveformPoints = length(waveformDataA)
+    c_waveformDataA = Vector{Cdouble}(waveformDataA)
+    c_waveformDataB = (waveformDataB==0)? 0: Vector{Cdouble}(waveformDataB)
     val = ccall((:SD_AOU_AWGfromArray, klib), Cint, (Cint, Cint, Cint, Cint,
         Cint, Cint, Cint, Cint, Ref{Cdouble}, Ref{Cdouble}), moduleID, nAWG,
         triggerMode, startDelay, cycles, prescaler, waveformType,
-        waveformPoints, waveformDataA, waveformDataB, paddingMode)
+        waveformPoints, c_waveformDataA, c_waveformDataB, paddingMode)
     return val
 end
 
