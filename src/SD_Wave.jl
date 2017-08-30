@@ -1,5 +1,6 @@
 # SD_Wave Functions for Keysight M32XXA/M33XXA AWGs
-export SD_Wave_newFromArrayDouble, SD_Wave_newFromFile, SD_Wave_delete
+export SD_Wave_newFromArrayInteger, SD_Wave_newFromArrayDouble,
+    SD_Wave_newFromFile, SD_Wave_delete
 
 ## new
 """
