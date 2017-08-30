@@ -419,37 +419,36 @@ function SD_AIN_FFT(moduleID::Integer, channel::Integer, data::Array{Int16}, dB:
 	end
 end
 
-"""
-Functions that exist in the manual, but not in the library `SD_AIN.h` file
-## DAQpause
-"""
-This function pauses the words acquisition on the selected DAQ. Acquisition can
-be resumed using DAQresume.
-"""
-SD_AIN_DAQpause(moduleID::Integer, nDAQ::Integer) =
-    ccall((:SD_AIN_DAQpause, klib), Cint, (Cint, Cint), moduleID, nDAQ)
 
-## DAQpauseMultiple
-"""
-This function pauses the words acquisition on the selected DAQs. Acquisition can
-be resumed using DAQresume.
-"""
-SD_AIN_DAQpauseMultiple(moduleID::Integer, DAQmask::Integer) =
-    ccall((:SD_AIN_DAQpauseMultiple, klib), Cint, (Cint, Cint),
-        moduleID, DAQmask)
-
-## DAQresume
-"""
-This function resumes acquisition on the selected DAQ.
-"""
-SD_AIN_DAQresume(moduleID::Integer, nDAQ::Integer) =
-	ccall((:SD_AIN_DAQresume, klib), Cint, (Cint, Cint), moduleID, nDAQ)
-
-## DAQresumeMultiple
-"""
-This function resumes acquisition on the selected DAQs.
-"""
-SD_AIN_DAQresumeMultiple(moduleID::Integer, DAQmask::Integer) =
-    ccall((:SD_AIN_DAQresumeMultiple, klib), Cint, (Cint, Cint),
-        moduleID, DAQmask)
-"""
+# Functions that exist in the manual, but not in the library `SD_AIN.h` file
+# ## DAQpause
+# """
+# This function pauses the words acquisition on the selected DAQ. Acquisition can
+# be resumed using DAQresume.
+# """
+# SD_AIN_DAQpause(moduleID::Integer, nDAQ::Integer) =
+#     ccall((:SD_AIN_DAQpause, klib), Cint, (Cint, Cint), moduleID, nDAQ)
+#
+# ## DAQpauseMultiple
+# """
+# This function pauses the words acquisition on the selected DAQs. Acquisition can
+# be resumed using DAQresume.
+# """
+# SD_AIN_DAQpauseMultiple(moduleID::Integer, DAQmask::Integer) =
+#     ccall((:SD_AIN_DAQpauseMultiple, klib), Cint, (Cint, Cint),
+#         moduleID, DAQmask)
+#
+# ## DAQresume
+# """
+# This function resumes acquisition on the selected DAQ.
+# """
+# SD_AIN_DAQresume(moduleID::Integer, nDAQ::Integer) =
+# 	ccall((:SD_AIN_DAQresume, klib), Cint, (Cint, Cint), moduleID, nDAQ)
+#
+# ## DAQresumeMultiple
+# """
+# This function resumes acquisition on the selected DAQs.
+# """
+# SD_AIN_DAQresumeMultiple(moduleID::Integer, DAQmask::Integer) =
+#     ccall((:SD_AIN_DAQresumeMultiple, klib), Cint, (Cint, Cint),
+#         moduleID, DAQmask)
