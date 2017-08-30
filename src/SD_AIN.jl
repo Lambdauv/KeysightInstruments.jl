@@ -39,7 +39,8 @@ SD_AIN_channelPrescalerConfig(moduleID::Integer, channel::Integer, prescaler::In
 		moduleID, channel, prescaler)
 
 ## int SD_AIN_channelPrescalerConfigMultiple(int moduleID, int mask, int prescaler);
-SD_AIN_channelPrescalerConfigMultiple(moduleID::Integer, mask::Integer, prescaler::Integer)
+SD_AIN_channelPrescalerConfigMultiple(moduleID::Integer, mask::Integer,
+	prescaler::Integer) =
 	ccall((:SD_AIN_channelPrescalerConfigMultiple, klib), Cint,
 		(Cint, Cint, Cint), moduleID, mask, prescaler)
 
@@ -310,7 +311,8 @@ of words is acquired, or when the configured timeout elapses (if timeout is set
 to ”0” , then DAQread waits until DAQpoints are acquired). In the timeout
 elapses, there may be words available, but less than the configured amount.
 """
-function SD_AIN_DAQread(moduleID::Integer, nDAQ::Integer, nPoints::Integer, timeOut::Integer=0)
+function SD_AIN_DAQread(moduleID::Integer, nDAQ::Integer, nPoints::Integer,
+	timeOut::Integer=0)
 	dataBuffer = Vector{Cshort}(nPoints) 	# Create an array to retrieve data
 	# dataBuffer contains nPoints words. Its size is nPoints × 2bytes/word.
  	val = ccall((:SD_AIN_DAQread, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
@@ -339,8 +341,8 @@ SD_AIN_DAQnPoints(moduleID::Integer, nDAQ::Integer) =
 This function configures buffer pool that will be filled with the data of the
 channel to be transferred to PC.
 """
-function SD_AIN_DAQbufferPoolConfig(moduleID::Integer, nDAQ::Integer, nPoints::Integer,
-	timeOut::Integer=0)
+function SD_AIN_DAQbufferPoolConfig(moduleID::Integer, nDAQ::Integer,
+	nPoints::Integer, timeOut::Integer=0)
 	dataBuffer = Vector{Cshort}(nPoints)
 	val = ccall((:SD_AIN_DAQbufferPoolConfig, klib), Cint,
 		(Cint, Cint, Ref{Cshort}, Cint, Cint, Ptr{Void}, Ptr{Void}),
@@ -392,7 +394,7 @@ function SD_AIN_DAQbufferGet(moduleID::Integer, nDAQ::Integer)
 		(Cint, Cint, Ref{Cint}, Ref{Cint}), moduleID, nDAQ, readPointsOut, errorOut)
 	if errorOut < 0
 		return errorOut
-	else:
+	else
 		nPoints = readPointsOut
 		if nPoints > 0
 			return Vector{Cshort}([unsafe_load(ptr, n) for n in 1:nPoints])
@@ -419,16 +421,17 @@ require windowing by the convolution in the frequency-domain
 - Gauss : Adjustable window (can be used for quadratic interpolation in
 frequency estimation) --> WINDOW_GAUSS = 6
 """
-function SD_AIN_FFT(moduleID::Integer, channel::Integer, data::Array{Int16}, dB::Bool,
-    windowType::Integer)
-	dataSize = length(data)
+function SD_AIN_FFT(moduleID::Integer, channel::Integer, data::Vector{Int16},
+	dB::Bool=false, windowType::Integer=0)
+	c_data = Vector{Cshort}(data) # conversion of data into appropriate Cshort counterpart
+	dataSize = length(c_data)
 	resultSize = dataSize
 	resultMag = Vector{Cdouble}(resultSize)
 	resultPhase = Vector{Cdouble}(resultSize)
 	val = ccall((:SD_AIN_FFT, klib), Cint, (Cint, Cint, Ref{Cshort}, Cint,
-		Ref{Cdouble}, Cint, Ref{Cdouble}, Bool, Cint), moduleID, channel, data,
+		Ref{Cdouble}, Cint, Ref{Cdouble}, Bool, Cint), moduleID, channel, c_data,
 		dataSize, resultMag, resultSize, resultPhase, dB, windowType)
-	if val >= 0
+	if val > 0
 		return resultMag, resultPhase
 	else
 		return val

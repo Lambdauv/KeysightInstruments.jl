@@ -151,7 +151,7 @@ SD_Module_getStatus(moduleID::Integer) =
 ## char* SD_Module_getSerialNumber(int moduleID, char *serialNumber);
 function SD_Module_getSerialNumber(moduleID::Integer)
 	serialNumber = Vector{UInt8}(128)
-	val = ccall((:SD_Module_getSerialNumber, klib), Cstring, (Cint, Ptr{Uint8}),
+	val = ccall((:SD_Module_getSerialNumber, klib), Cstring, (Cint, Ptr{UInt8}),
 		moduleID, serialNumber)
 	return unsafe_load(val)
 end
@@ -159,7 +159,7 @@ end
 ## char* SD_Module_getProductName(int moduleID, char *productName);
 function SD_Module_getProductName(moduleID::Integer)
 	productName = Vector{UInt8}(128)
-	val = ccall((:SD_Module_getProductName, klib), Cstring, (Cint, Ptr{Uint8}),
+	val = ccall((:SD_Module_getProductName, klib), Cstring, (Cint, Ptr{UInt8}),
 		moduleID, productName)
 	return unsafe_load(val)
 end
@@ -218,25 +218,25 @@ function SD_Module_FPGAwritePCport(moduleID::Integer, nPCport::Integer, data,
 end
 
 ## int SD_Module_FPGAload(int moduleID, const char *fileName);
-SD_Module_FPGAload(module::Integer, fileName::String) =
+SD_Module_FPGAload(moduleID::Integer, fileName::String) =
 	ccall((:SD_Module_FPGAload, klib), Cint, (Cint, Cstring), moduleID, fileName)
 
 ## int SD_Module_FPGAreset(int moduleID, int mode);
-SD_Module_FPGAreset(moduleID::Integer, mode::Integer)
+SD_Module_FPGAreset(moduleID::Integer, mode::Integer) =
 	ccall((:SD_Module_FPGAreset, klib), Cint, (Cint, Cint), moduleID, mode)
 
 # HVI Registers
 # int SD_Module_readVariable(int moduleID, int varNumber, int SD_DLL_API_REF_C errorOut);
-function SD_Module_readVariable(moduleID::Integer, varNumber::Integer)
-	errorOut = Cint(0)
-	val = ccall((:SD_Module_readVariable, klib), Cint,
-		(moduleID, varNumber, Ref{Cint}), moduleID, varNumber, errorOut)
-	if errorOut < 0
-		return errorOut
-	else
-		return val
-	end
-end
+ function SD_Module_readVariable(moduleID::Integer, varNumber::Integer)
+ 	errorOut = Cint(0)
+ 	val = ccall((:SD_Module_readVariable, klib), Cint,
+		(Cint, Cint, Ref{Cint}), moduleID, varNumber, errorOut)
+ 	if errorOut < 0
+ 		return errorOut
+ 	else
+ 		return val
+ 	end
+ end
 
 # int SD_Module_readVariableWithName(int moduleID, const char *varName, int SD_DLL_API_REF_C errorOut);
 function SD_Module_readVariableWithName(moduleID::Integer, varName::String)
@@ -251,8 +251,10 @@ function SD_Module_readVariableWithName(moduleID::Integer, varName::String)
 end
 
 # int SD_Module_writeVariable(int moduleID, int varNumber, int varValue);
-SD_Module_writeVariable(moduleID::Integer, varNumber::Integer, varValue::Integer) =
-	ccall((:SD_Module_writeVariable, klib), Cint, (Cint, Cint, Cint))
+SD_Module_writeVariable(moduleID::Integer, varNumber::Integer,
+	varValue::Integer) =
+	ccall((:SD_Module_writeVariable, klib), Cint, (Cint, Cint, Cint),
+		moduleID, varNumber, varValue)
 
 # int SD_Module_writeVariableWithName(int moduleID, const char *varName, int varValue);
 SD_Module_writeVariableWithName(moduleID::Integer, varName::String,
@@ -366,7 +368,7 @@ SD_Module_compileHVI(moduleID::Integer) =
 	ccall((:SD_Module_compileHVI, klib), Cint, (Cint,), moduleID)
 
 ## int SD_Module_compilationErrorMessageHVI(int moduleID, int errorIndex, char *message, int maxSize);
-SD_Module_compilationErrorMessageHVI(moduleID::Integer, errorIndex,
+SD_Module_compilationErrorMessageHVI(moduleID::Integer, errorIndex::Integer,
 	message::String, maxSize::Integer) =
 	ccall((:SD_Module_compilationErrorMessageHVI, klib), Cint,
 		(Cint, Cint, Cstring, Cint), moduleID, errorIndex, message, maxSize)
