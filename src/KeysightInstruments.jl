@@ -5,8 +5,21 @@ module KeysightInstruments
 # http://literature.cdn.keysight.com/litweb/pdf/M3201-90001.pdf?id=2787170
 using Compat
 
-# Load libraries: TODO
+"""
+Load libraries: First need to install Keysight SD1 software from
+http://www.keysight.com/main/software.jspx?cc=US&lc=eng&nid=-33786.536905585&id=2784055&pageMode=CV
+"""
+const klib = is_windows() ? "SD1core" : "libSD1core.so"
 
+
+"""
+keysightopen() = begin
+    @static begin
+        kHandle = Libdl.dlopen(klib)
+        keysightexit(()->Libdl.dlclose(kHandle))
+    end
+end
+"""
 
 # Keysight Constants
 include("KeysightConstants.jl")
