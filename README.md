@@ -12,3 +12,5 @@ using KeysightInstruments
 ## To do
 - Complete wrapping functions `DAQbufferPoolConfig` and `DAQbufferGet`
 - Load libraries (`*.dll` for windows or `*.so` for linux)
+- Serious debugging required since definitions in the product manual and the
+actual code doesn't match. 
