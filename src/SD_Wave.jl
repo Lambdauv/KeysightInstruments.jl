@@ -22,18 +22,28 @@ doubles, with two components (Module and Phase) --> WAVE_IQPOLAR = 3
 - Digital : Digital waveforms defined with integers --> WAVE_DIGITAL = 5
 """
 ## int SD_Wave_newFromArrayInteger(int waveformType, int waveformPoints, int *waveformDataA, int *waveformDataB SD_DEFAULT_NULL);
-SD_Wave_newFromArrayInteger(waveformType::Integer, waveformDataA,
-    waveformDataB=0) =
-    ccall((:SD_Wave_newFromArrayInteger, klib), Cint,
+function SD_Wave_newFromArrayInteger(waveformType::Integer,
+    waveformDataA::Vector, waveformDataB::Vector=0)
+    c_waveformDataA = Vector{Cint}(waveformDataA)
+    c_waveformDataB = Vector{Cint}(waveformDataB)
+    waveformPoints = length(c_waveformDataA)
+    val = ccall((:SD_Wave_newFromArrayInteger, klib), Cint,
         (Cint, Cint, Ref{Cint}, Ref{Cint}),
-        waveformType, length(waveformDataA), waveformDataA, waveformDataB)
+        waveformType, waveformPoints, c_waveformDataA, c_waveformDataB)
+    return val
+end
 
 ## int SD_Wave_newFromArrayDouble(int waveformType, int waveformPoints, double *waveformDataA, double *waveformDataB SD_DEFAULT_NULL);
-SD_Wave_newFromArrayDouble(waveformType::Integer, waveformDataA,
-    waveformDataB=0) =
-    ccall((:SD_Wave_newFromArrayDouble, klib), Cint,
+function SD_Wave_newFromArrayDouble(waveformType::Integer,
+    waveformDataA::Vector, waveformDataB::Vector=0)
+    c_waveformDataA = Vector{Cdouble}(waveformDataA)
+    c_waveformDataB = Vector{Cdouble}(waveformDataB)
+    waveformPoints = length(c_waveformDataA)
+    val = ccall((:SD_Wave_newFromArrayDouble, klib), Cint,
         (Cint, Cint, Ref{Cdouble}, Ref{Cdouble}),
-        waveformType, length(waveformDataA), waveformDataA, waveformDataB)
+        waveformType, waveformPoints, c_waveformDataA, c_waveformDataB)
+    return val
+end
 
 ## int SD_Wave_newFromFile(const char *waveformFile);
 """
