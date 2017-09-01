@@ -36,7 +36,7 @@ SD_Module_openWithSerialNumber(partNumber::String, serialNumber::String) =
         partNumber, serialNumber)
 
 ## int SD_Module_openWithSlot(const char *partNumber, int nChassis, int nSlot);
-SD_Module_openWithSlot(partNumber::String, nChassis::Integer, nSlot::Integer) =
+SD_Module_openWithSlot(partNumber::String, chassis::Integer, slot::Integer) =
     ccall((:SD_Module_openWithSlot, klib), Cint, (Cstring, Cint, Cint),
         partNumber, chassis, slot)
 
@@ -153,7 +153,7 @@ function SD_Module_getSerialNumber(moduleID::Integer)
 	serialNumber = Vector{UInt8}(128)
 	val = ccall((:SD_Module_getSerialNumber, klib), Cstring, (Cint, Ptr{UInt8}),
 		moduleID, serialNumber)
-	return unsafe_load(val)
+		return unsafe_string(pointer(serialNumber))
 end
 
 ## char* SD_Module_getProductName(int moduleID, char *productName);
@@ -161,7 +161,7 @@ function SD_Module_getProductName(moduleID::Integer)
 	productName = Vector{UInt8}(128)
 	val = ccall((:SD_Module_getProductName, klib), Cstring, (Cint, Ptr{UInt8}),
 		moduleID, productName)
-	return unsafe_load(val)
+	return unsafe_string(pointer(productName))
 end
 
 ## double SD_Module_getFirmwareVersion(int moduleID);
