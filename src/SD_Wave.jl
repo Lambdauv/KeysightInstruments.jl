@@ -23,7 +23,7 @@ doubles, with two components (Module and Phase) --> WAVE_IQPOLAR = 3
 """
 ## int SD_Wave_newFromArrayInteger(int waveformType, int waveformPoints, int *waveformDataA, int *waveformDataB SD_DEFAULT_NULL);
 function SD_Wave_newFromArrayInteger(waveformType::Integer,
-    waveformDataA::Vector, waveformDataB::Vector=[]])
+    waveformDataA::Vector, waveformDataB::Vector=[])
     c_waveformDataA = Vector{Cint}(waveformDataA)
     c_waveformDataB = Vector{Cint}(waveformDataB)
     waveformPoints = length(c_waveformDataA)
