@@ -21,7 +21,7 @@ SD_HVI_pause,
 SD_HVI_resume,
 SD_HVI_stop,
 SD_HVI_reset,
-SD_HVI_compilationErrorMessage,
+SD_HVI_compilationErrorMessage
 
 # Load and run existing HVI
 
@@ -59,7 +59,7 @@ SD_HVI_compilationErrorMessage(HVIID:Integer, errorIndex::Integer, message::Stri
 SD_HVI_assignHardwareWithIndexAndSerialNumber(HVIID::Integer, index::Integer, productName::String, serialNumber::String) =
 ccall((:SD_HVI_assignHardwareWithIndexAndSerialNumber, klib), Cint, (Cint, Cint, Cstring, Cstring), HVIID, index, productName, serialNumber)
 
-#int SD_HVI_assignHardwareWithIndexAndSlot(int HVIID, int index, int chassis, intslot);
+#int SD_HVI_assignHardwareWithIndexAndSlot(int HVIID, int index, int chassis, int slot);
 SD_HVI_assignHardwareWithIndexAndSlot(HVIID::Integer, index::Integer, chassis::Integer, intslot::Integer) =
 	ccall((:SD_HVI_assignHardwareWithIndexAndSlot, klib), Cint, (Cint, Cint, Cint, Cint), HVIId, index, chassis, intslot)
 
@@ -67,7 +67,7 @@ SD_HVI_assignHardwareWithIndexAndSlot(HVIID::Integer, index::Integer, chassis::I
 SD_HVI_assignHardwareWithUserNameAndSerialNumber(HVIID::Integer, moduleUserName::String, productName::String, serialNumber::String) =
 	ccall((:SD_HVI_assignHardwareWithUserNameAndSerialNumber, klib), Cint, (Cint, Cstring, Cstring, Cstring), HVIID, moduleUserName, productName, serialNumber)
 
-#int SD_HVI_assignHardwareWithUserNameAndSlot(int HVIID, const char *moduleUserName, int chassis, intslot);
+#int SD_HVI_assignHardwareWithUserNameAndSlot(int HVIID, const char *moduleUserName, int chassis, int slot);
 SD_HVI_assignHardwareWithUserNameAndSlot(HVIID::Integer, moduleUserName::String, chassis::Integer, intslot::Integer) =
 	ccall((:SD_HVI_assignHardwareWithUserNameAndSlot, klib), Cint, (Cint, Cstring, Cint, Cint), HVIID, moduleUserName, chassis, intslot)
 
@@ -77,6 +77,14 @@ SD_HVI_assignHardwareWithUserNameAndModuleID(HVIID::Integer, moduleUserName::Str
 
 
 # Get module info
+
+#int SD_HVI_getNumberOfModules(int HVIID);
+SD_HVI_getNumberOfModules(HVIID::Integer) =
+	ccall((:SD_HVI_getNumberOfModules, klib), Cint, (Cint), HVIID)
+
+#int SD_HVI_getModuleName(int HVIID, int index, char *buffer, int size);
+SD_HVI_getModuleName(HVIID::Integer, index::Integer, buffer::String, size::Integer) =
+	ccall((:SD_HVI_getModuleName, klib), Cint, (Cint, Cint, Cstring, Cint), HVIID, index, buffer, size)
 
 #int SD_HVI_getModuleIndex(int HVIID, const char *moduleUserName);
 SD_HVI_getModuleIndex(HVIID::Integer, moduleUserName::String) =
