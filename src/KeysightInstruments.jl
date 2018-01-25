@@ -21,6 +21,8 @@ include("SD_AIN.jl")
 include("SD_AOU.jl")
 # SD_Wave Functions
 include("SD_Wave.jl")
+# SD_HVI Functions
+include("SD_HVI.jl")
 
 # Keysight Errors
 include("KeysightErrors.jl")
