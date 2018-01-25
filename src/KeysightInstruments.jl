@@ -9,7 +9,7 @@ module KeysightInstruments
 Load libraries: First need to install Keysight SD1 software from
 http://www.keysight.com/main/software.jspx?cc=US&lc=eng&nid=-33786.536905585&id=2784055&pageMode=CV
 """
-const klib = is_windows() ? "SD1core" : "libSD1core.so"
+const klib = is_windows() ? "SD1core.dll" : "libSD1core.so"
 
 # Keysight Constants
 include("KeysightConstants.jl")
@@ -21,6 +21,8 @@ include("SD_AIN.jl")
 include("SD_AOU.jl")
 # SD_Wave Functions
 include("SD_Wave.jl")
+# SD_HVI Functions
+include("SD_HVI.jl")
 
 # Keysight Errors
 include("KeysightErrors.jl")
