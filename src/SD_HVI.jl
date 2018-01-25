@@ -52,7 +52,7 @@ SD_HVI_stop(HVIID::Integer) =
 SD_HVI_reset(HVIID::Integer) =
 	ccall((:SD_HVI_reset, klib), Cint, (Cint,), HVIID)
 #int SD_HVI_compilationErrorMessage(int HVIID, int errorIndex, char *message, int maxSize);
-SD_HVI_compilationErrorMessage(HVIID:Integer, errorIndex::Integer, message::String, maxSize::Integer) =
+SD_HVI_compilationErrorMessage(HVIID::Integer, errorIndex::Integer, message::String, maxSize::Integer) =
 	ccall((:SD_HVI_compilationErrorMessage, klib), Cint, (Cint, Cint, Cstring, Cint), HVIID, errorIndex, mesasge, maxSize)
 
 # Assign Hardware
@@ -74,8 +74,8 @@ SD_HVI_assignHardwareWithUserNameAndSlot(HVIID::Integer, moduleUserName::String,
 	ccall((:SD_HVI_assignHardwareWithUserNameAndSlot, klib), Cint, (Cint, Cstring, Cint, Cint), HVIID, moduleUserName, chassis, intslot)
 
 #int SD_HVI_assignHardwareWithUserNameAndModuleID(int HVIID, const char *moduleUserName, int module);
-SD_HVI_assignHardwareWithUserNameAndModuleID(HVIID::Integer, moduleUserName::String, module::Integer) =
-	ccall((:SD_HVI_assignHardwareWithUserNameAndModuleID, klib), Cint, (Cint, Cstring, Cint), HVIID, moduleUserName, module)
+SD_HVI_assignHardwareWithUserNameAndModuleID(HVIID::Integer, moduleUserName::String, moduleID::Integer) =
+	ccall((:SD_HVI_assignHardwareWithUserNameAndModuleID, klib), Cint, (Cint, Cstring, Cint), HVIID, moduleUserName, moduleID)
 
 
 # Get module info
@@ -94,7 +94,7 @@ SD_HVI_getModuleIndex(HVIID::Integer, moduleUserName::String) =
 
 #int SD_HVI_getModuleIDwithIndex(int HVIID, int index);
 SD_HVI_getModuleIDwithIndex(HVIID::Integer, index::Integer) =
-	ccall((:SD_HVI_getModuleIDwithIndex, klib), Cint, (Cint, Cint) HVIID, index)
+	ccall((:SD_HVI_getModuleIDwithIndex, klib), Cint, (Cint, Cint), HVIID, index)
 
 #int SD_HVI_getModuleIDwithUserName(int HVIID, const char *moduleUserName);
 SD_HVI_getModuleIDwithUserName(HVIID::Integer, moduleUserName::String) =
@@ -111,11 +111,11 @@ SD_HVI_writeIntegerConstantWithUserName(HVIID::Integer, moduleUserName::String, 
 	ccall((:SD_HVI_writeIntegerConstantWithUserName, klib), Cint, (Cint, Cstring, Cstring, Cint), HVIID, moduleUserName, constantName, value)
 
 #int SD_HVI_writeDoubleConstantWithIndex(int HVIID, int moduleIndex, const char *constantName, double value, const char *unit);
-SD_HVI_writeDoubleConstantWithIndex(HVIID::Integer, moduleIndex::Integer, constantName::String, value::Double, unit::String) =
+SD_HVI_writeDoubleConstantWithIndex(HVIID::Integer, moduleIndex::Integer, constantName::String, value::Float64, unit::String) =
 	ccall((:SD_HVI_writeDoubleConstantWithIndex, klib), Cint, (Cint, Cint, Cstring, Cdouble, Cstring), HVIID, moduleIndex, constantName, value, unit)
 
 #int SD_HVI_writeDoubleConstantWithUserName(int HVIID, const char *moduleUserName, const char *constantName, double value, const char *unit);
-SD_HVI_writeDoubleConstantWithUserName(HVIID::Integer, moduleUserName::String, constantName::String, value::Double, unit::String) =
+SD_HVI_writeDoubleConstantWithUserName(HVIID::Integer, moduleUserName::String, constantName::String, value::Float64, unit::String) =
 	ccall((:SD_HVI_writeDoubleConstantWithUserName, klib), Cint, (Cint, Cstring, Cstring, Cdouble, Cstring), HVIID, moduleUserName, constantName, value, unit)
 
 #int SD_HVI_readIntegerConstantWithIndex(int HVIID, int moduleIndex, const char *constantName, int &value);
