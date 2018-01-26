@@ -1,41 +1,24 @@
-export SD_HVI_assignHardwareWithIndexAndSlot,
-SD_HVI_assignHardwareWithUserNameAndSerialNumber,
-SD_HVI_assignHardwareWithUserNameAndSlot,
-SD_HVI_assignHardwareWithUserNameAndModuleID,
-SD_HVI_getModuleIndex,
-SD_HVI_getModuleIDwithIndex,
-SD_HVI_getModuleIDwithUserName,
-SD_HVI_writeIntegerConstantWithIndex,
-SD_HVI_writeIntegerConstantWithUserName,
-SD_HVI_writeDoubleConstantWithIndex,
-SD_HVI_writeDoubleConstantWithUserName,
-SD_HVI_readIntegerConstantWithIndex,
-SD_HVI_readIntegerConstantWithUserName,
-SD_HVI_readDoubleConstantWithIndex,
-SD_HVI_readDoubleConstantWithUserName,
-SD_HVI_load,
-SD_HVI_open,
-SD_HVI_close,
-SD_HVI_start,
-SD_HVI_pause,
-SD_HVI_resume,
-SD_HVI_stop,
-SD_HVI_reset,
-SD_HVI_compilationErrorMessage,
-SD_HVI_getNumberOfModules,
-SD_HVI_getModuleName
+#SD_HVI functions
+
+export SD_HVI_load, SD_HVI_open, SD_HVI_close, SD_HVI_start, SD_HVI_pause, SD_HVI_resume, SD_HVI_stop, SD_HVI_reset, SD_HVI_compile,
+	SD_HVI_compilationErrorMessage, SD_HVI_getNumberOfModules, SD_HVI_getModuleName, SD_HVI_assignHardwareWithIndexAndSlot,
+	SD_HVI_assignHardwareWithUserNameAndSerialNumber, SD_HVI_assignHardwareWithUserNameAndSlot,
+	SD_HVI_assignHardwareWithUserNameAndModuleID, SD_HVI_getModuleIndex, SD_HVI_getModuleIDwithIndex,
+	SD_HVI_getModuleIDwithUserName, SD_HVI_writeIntegerConstantWithIndex, SD_HVI_writeIntegerConstantWithUserName,
+	SD_HVI_writeDoubleConstantWithIndex, SD_HVI_writeDoubleConstantWithUserName, SD_HVI_readIntegerConstantWithIndex,
+	SD_HVI_readIntegerConstantWithUserName, SD_HVI_readDoubleConstantWithIndex, SD_HVI_readDoubleConstantWithUserName
 
 # Load and run existing HVI
 
-#int SD_HVI_load(int HVIID);
-SD_HVI_load(HVIID::Integer) =
-	ccall((:SD_HVI_load, klib), Cint, (Cint,), HVIID)
 #int SD_HVI_open(char* HVIfile);
 SD_HVI_open(HVIfile::String) =
 	ccall((:SD_HVI_open, klib), Cint, (Cstring,), HVIfile)
 #int SD_HVI_close(int HVIID);
 SD_HVI_close(HVIID::Integer) =
 	ccall((:SD_HVI_close, klib), Cint, (Cint,), HVIID)
+#int SD_HVI_load(int HVIID);
+SD_HVI_load(HVIID::Integer) =
+	ccall((:SD_HVI_load, klib), Cint, (Cint,), HVIID)
 #int SD_HVI_start(int HVIID);
 SD_HVI_start(HVIID::Integer) =
 	ccall((:SD_HVI_start, klib), Cint, (Cint,), HVIID)
@@ -51,6 +34,9 @@ SD_HVI_stop(HVIID::Integer) =
 #int SD_HVI_reset(int HVIID);
 SD_HVI_reset(HVIID::Integer) =
 	ccall((:SD_HVI_reset, klib), Cint, (Cint,), HVIID)
+#int SD_HVI_compile(int HVIID);
+SD_HVI_compile(HVIID::Integer) =
+	ccall((:SD_HVI_compile, klib), Cint, (Cint,), HVIID)
 #int SD_HVI_compilationErrorMessage(int HVIID, int errorIndex, char *message, int maxSize);
 SD_HVI_compilationErrorMessage(HVIID::Integer, errorIndex::Integer, message::String, maxSize::Integer) =
 	ccall((:SD_HVI_compilationErrorMessage, klib), Cint, (Cint, Cint, Cstring, Cint), HVIID, errorIndex, mesasge, maxSize)
@@ -63,7 +49,7 @@ ccall((:SD_HVI_assignHardwareWithIndexAndSerialNumber, klib), Cint, (Cint, Cint,
 
 #int SD_HVI_assignHardwareWithIndexAndSlot(int HVIID, int index, int chassis, int slot);
 SD_HVI_assignHardwareWithIndexAndSlot(HVIID::Integer, index::Integer, chassis::Integer, intslot::Integer) =
-	ccall((:SD_HVI_assignHardwareWithIndexAndSlot, klib), Cint, (Cint, Cint, Cint, Cint), HVIId, index, chassis, intslot)
+	ccall((:SD_HVI_assignHardwareWithIndexAndSlot, klib), Cint, (Cint, Cint, Cint, Cint), HVIID, index, chassis, intslot)
 
 #int SD_HVI_assignHardwareWithUserNameAndSerialNumber(int HVIID, const char *moduleUserName, const char *productName, const char *serialNumber);
 SD_HVI_assignHardwareWithUserNameAndSerialNumber(HVIID::Integer, moduleUserName::String, productName::String, serialNumber::String) =
